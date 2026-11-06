@@ -1637,6 +1637,130 @@ async def get_settings():
     return room_settings
 
 
+# --- CLI 智能体管理（网页端配置，写入 config.local.toml） ---
+
+_CLI_NAME_RE = _re.compile(r'^[a-z0-9][a-z0-9_-]{0,31}$')
+
+
+def _builtin_agent_names() -> set[str]:
+    """config.toml 里预置的 CLI 名字，这些不通过网页改名/删除。"""
+    import tomllib
+
+    import config_loader
+    try:
+        with open(config_loader.ROOT / "config.toml", "rb") as f:
+            return set(tomllib.load(f).get("agents", {}))
+    except Exception:
+        return set()
+
+
+def _cli_row(name: str, cfg: dict, editable: bool) -> dict:
+    import shutil
+
+    command = str(cfg.get("command", "") or "")
+    executable = command.split()[0] if command else ""
+    if cfg.get("type") == "api":
+        available = True          # API 智能体不需要本地可执行文件
+    else:
+        available = bool(executable) and shutil.which(executable) is not None
+    instances = registry.get_instances_for(name) if registry else []
+    return {
+        "name": name,
+        "command": command,
+        "cwd": cfg.get("cwd", ""),
+        "label": cfg.get("label") or name,
+        "color": cfg.get("color") or "#8b5cf6",
+        "type": cfg.get("type", "cli"),
+        "base_url": cfg.get("base_url", ""),
+        "model": cfg.get("model", ""),
+        "available": available,
+        "editable": editable,
+        "instances": [{"name": i.get("name"), "label": i.get("label")} for i in instances],
+    }
+
+
+@app.get("/api/cli-agents")
+async def list_cli_agents():
+    import config_loader
+
+    builtin_names = _builtin_agent_names()
+    merged = config.get("agents", {}) or {}
+    local = config_loader.read_local_agents()
+
+    builtin = [_cli_row(n, merged.get(n, local.get(n, {})), editable=False)
+               for n in sorted(builtin_names)]
+    custom = [_cli_row(n, cfg, editable=True)
+              for n, cfg in sorted(local.items()) if n not in builtin_names]
+    return {"builtin": builtin, "custom": custom,
+            "config_path": str(config_loader.local_config_path())}
+
+
+@app.post("/api/cli-agents")
+async def save_cli_agent(request: Request):
+    import config_loader
+
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "invalid JSON"}, status_code=400)
+
+    name = str(body.get("name", "")).strip().lower()
+    command = str(body.get("command", "")).strip()
+    if not _CLI_NAME_RE.match(name):
+        return JSONResponse(
+            {"error": "名字只能用小写字母、数字、- 和 _，且以字母或数字开头（最长 32 位）"},
+            status_code=400)
+    if name in _builtin_agent_names():
+        return JSONResponse({"error": f"「{name}」是内置 CLI，换个名字"}, status_code=400)
+    if not command:
+        return JSONResponse({"error": "启动命令不能为空"}, status_code=400)
+
+    cfg = {
+        "command": command,
+        "label": str(body.get("label", "") or name).strip()[:40],
+        "color": str(body.get("color", "") or "#8b5cf6").strip(),
+    }
+    cwd = str(body.get("cwd", "") or "").strip()
+    if cwd:
+        cfg["cwd"] = cwd
+
+    local = config_loader.read_local_agents()
+    updated = name in local
+    local[name] = cfg
+    config_loader.write_local_agents(local)
+
+    # 立刻生效：注册表模板 + 内存里的 config
+    if registry:
+        registry.upsert_base(name, cfg)
+    config.setdefault("agents", {})[name] = cfg
+
+    await broadcast({"type": "cli_agents"})
+    return JSONResponse({"ok": True, "name": name, "updated": updated})
+
+
+@app.delete("/api/cli-agents/{name}")
+async def delete_cli_agent(name: str):
+    import config_loader
+
+    name = name.strip().lower()
+    if name in _builtin_agent_names():
+        return JSONResponse({"error": "内置 CLI 不能删除"}, status_code=400)
+
+    local = config_loader.read_local_agents()
+    if name not in local:
+        return JSONResponse({"error": "找不到这个 CLI"}, status_code=404)
+    local.pop(name)
+    config_loader.write_local_agents(local)
+
+    if registry:
+        registry.remove_base(name)
+    if isinstance(config.get("agents"), dict):
+        config["agents"].pop(name, None)
+
+    await broadcast({"type": "cli_agents"})
+    return JSONResponse({"ok": True})
+
+
 @app.delete("/api/hat/{agent_name}")
 async def delete_hat(agent_name: str):
     """Remove an agent's hat (called by the trash-can UI)."""

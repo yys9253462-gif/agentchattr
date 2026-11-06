@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>agentchattr</title>
-    <link rel="stylesheet" href="/static/style.css?v=264">
-    <link rel="stylesheet" href="/static/sessions.css?v=227">
-    <link rel="stylesheet" href="/static/jobs.css?v=229">
+    <link rel="stylesheet" href="/static/style.css?v=267">
+    <link rel="stylesheet" href="/static/sessions.css?v=230">
+    <link rel="stylesheet" href="/static/jobs.css?v=232">
     <link rel="icon" href="/static/favicon.ico">
 </head>
 <body>
@@ -183,10 +183,45 @@
         <div id="content-area">
             <aside id="agent-panel-left" class="agent-panel hidden" data-side="left">
                 <div class="agent-panel-header">
-                    <span>接入的智能体</span>
-                    <span class="agent-panel-count" id="agent-count-left">0</span>
+                    <span>CLI 智能体</span>
+                    <button id="cli-add-btn" class="agent-panel-add" onclick="showCliForm()" title="添加一个 CLI">+</button>
                 </div>
-                <div class="agent-panel-body" id="agent-list-left"></div>
+                <div class="agent-panel-body">
+                    <form id="cli-form" class="cli-form hidden" onsubmit="saveCliAgent(event)">
+                        <div class="cli-form-title" id="cli-form-title">添加 CLI</div>
+                        <label class="cli-field">
+                            <span>名字</span>
+                            <input type="text" id="cli-name" placeholder="mycli" maxlength="32" autocomplete="off">
+                        </label>
+                        <label class="cli-field">
+                            <span>启动命令</span>
+                            <input type="text" id="cli-command" placeholder="mycli 或 npx some-cli" maxlength="120" autocomplete="off">
+                        </label>
+                        <label class="cli-field">
+                            <span>显示名</span>
+                            <input type="text" id="cli-label" placeholder="留空则用名字" maxlength="40" autocomplete="off">
+                        </label>
+                        <label class="cli-field">
+                            <span>工作目录</span>
+                            <input type="text" id="cli-cwd" placeholder="留空用默认" maxlength="200" autocomplete="off">
+                        </label>
+                        <label class="cli-field">
+                            <span>颜色</span>
+                            <input type="color" id="cli-color" value="#8b5cf6">
+                        </label>
+                        <div class="cli-form-error" id="cli-form-error"></div>
+                        <div class="cli-form-actions">
+                            <button type="button" class="cli-btn" onclick="hideCliForm()">取消</button>
+                            <button type="submit" class="cli-btn primary">保存</button>
+                        </div>
+                    </form>
+
+                    <div class="agent-section-title">内置<span class="agent-panel-count" id="cli-builtin-count">0</span></div>
+                    <div id="cli-builtin-list" class="agent-group"></div>
+                    <div class="agent-section-title">自定义<span class="agent-panel-count" id="cli-custom-count">0</span></div>
+                    <div id="cli-custom-list" class="agent-group"></div>
+                    <div class="cli-config-path" id="cli-config-path"></div>
+                </div>
             </aside>
             <aside id="channel-sidebar" class="hidden">
                 <div id="channel-sidebar-top"></div>
@@ -405,14 +440,14 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="/static/core.js?v=227"></script>
-    <script src="/static/store.js?v=227"></script>
-    <script src="/static/sessions.js?v=228"></script>
-    <script src="/static/attachments.js?v=9"></script>
-    <script src="/static/jobs.js?v=230"></script>
-    <script src="/static/channels.js?v=230"></script>
-    <script src="/static/rules-panel.js?v=228"></script>
-    <script src="/static/chat.js?v=279"></script>
-    <script src="/static/agent-panel.js?v=4"></script>
+    <script src="/static/core.js?v=230"></script>
+    <script src="/static/store.js?v=230"></script>
+    <script src="/static/sessions.js?v=231"></script>
+    <script src="/static/attachments.js?v=12"></script>
+    <script src="/static/jobs.js?v=233"></script>
+    <script src="/static/channels.js?v=233"></script>
+    <script src="/static/rules-panel.js?v=231"></script>
+    <script src="/static/chat.js?v=282"></script>
+    <script src="/static/agent-panel.js?v=7"></script>
 </body>
 </html>

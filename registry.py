@@ -54,6 +54,20 @@ class RuntimeRegistry:
             for name, cfg in agents_config.items():
                 self._bases[name] = dict(cfg)
 
+    def upsert_base(self, name: str, cfg: dict):
+        """新增或更新一个 base 模板（网页端改 CLI 配置时调用）。"""
+        with self._lock:
+            self._bases[name] = dict(cfg)
+        self._notify()
+
+    def remove_base(self, name: str) -> bool:
+        """删除一个 base 模板。已注册的实例不受影响，只是不能再新增。"""
+        with self._lock:
+            existed = self._bases.pop(name, None) is not None
+        if existed:
+            self._notify()
+        return existed
+
     def on_change(self, cb):
         """Register a callback fired after any registry mutation."""
         self._on_change_cbs.append(cb)

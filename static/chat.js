@@ -542,6 +542,8 @@ function handleServerEvent(event) {
             todos[d.id] = d.status;
         }
         updateTodoState(d.id, d.status);
+    } else if (event.type === 'cli_agents') {
+        if (typeof window.refreshCliPanels === 'function') window.refreshCliPanels();
     } else if (event.type === 'status') {
         updateStatus(event.data);
     } else if (event.type === 'typing') {

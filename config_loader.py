@@ -135,3 +135,76 @@ def load_config(root: Path | None = None) -> dict:
     _apply_env_overrides(config)
 
     return config
+
+
+# --- 自定义 CLI 智能体（网页端配置，存到 config.local.toml） ---
+
+_LOCAL_HEADER = (
+    "# config.local.toml — 本地自定义配置（已被 .gitignore 忽略）\n"
+    "# 通过网页左侧「CLI 智能体」面板添加的条目会写在这里。\n"
+    "# 手工编辑也完全可以，重启服务后生效。\n"
+)
+
+
+def local_config_path(root: Path | None = None) -> Path:
+    return (root or ROOT) / "config.local.toml"
+
+
+def read_local_agents(root: Path | None = None) -> dict:
+    """读取 config.local.toml 里的 [agents.*]，文件不存在就返回空字典。"""
+    path = local_config_path(root)
+    if not path.exists():
+        return {}
+    try:
+        with open(path, "rb") as f:
+            data = tomllib.load(f)
+    except Exception:
+        return {}
+    return dict(data.get("agents", {}))
+
+
+def _toml_str(value: str) -> str:
+    escaped = str(value).replace("\\", "\\\\").replace('"', '\\"')
+    return f'"{escaped}"'
+
+
+def write_local_agents(agents: dict, root: Path | None = None) -> None:
+    """把自定义 [agents.*] 整体写回 config.local.toml（保留文件其余部分之外的内容会丢失）。"""
+    path = local_config_path(root)
+
+    # 保留文件里可能存在的非 agents 段落
+    other_sections: dict = {}
+    if path.exists():
+        try:
+            with open(path, "rb") as f:
+                data = tomllib.load(f)
+            other_sections = {k: v for k, v in data.items() if k != "agents"}
+        except Exception:
+            other_sections = {}
+
+    lines: list[str] = [_LOCAL_HEADER]
+    for name, cfg in agents.items():
+        lines.append(f"\n[agents.{name}]")
+        for key, value in cfg.items():
+            if isinstance(value, bool):
+                lines.append(f"{key} = {'true' if value else 'false'}")
+            elif isinstance(value, (int, float)):
+                lines.append(f"{key} = {value}")
+            else:
+                lines.append(f"{key} = {_toml_str(value)}")
+
+    for section, values in other_sections.items():
+        if not isinstance(values, dict):
+            continue
+        lines.append(f"\n[{section}]")
+        for key, value in values.items():
+            if isinstance(value, dict):
+                continue
+            if isinstance(value, bool):
+                lines.append(f"{key} = {'true' if value else 'false'}")
+            elif isinstance(value, (int, float)):
+                lines.append(f"{key} = {value}")
+            else:
+                lines.append(f"{key} = {_toml_str(value)}")
+
+    path.write_text("\n".join(lines).rstrip() + "\n", "utf-8")
