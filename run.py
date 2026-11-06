@@ -13,6 +13,13 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 sys.path.insert(0, str(ROOT))
 
+# 控制台编码兜底：终端用 GBK 等无法表示全部中文时不要因为 print 崩溃
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except (AttributeError, ValueError):
+        pass
+
 
 def _parse_args():
     parser = argparse.ArgumentParser(

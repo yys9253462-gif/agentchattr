@@ -11,10 +11,23 @@ REM PATH — but a window opened before that install (e.g. Explorer double-click
 REM inherits a stale PATH and won't find agy. Prepend it so this always works.
 if exist "%LOCALAPPDATA%\agy\bin\agy.exe" set "PATH=%LOCALAPPDATA%\agy\bin;%PATH%"
 
-REM Auto-create venv and install deps on first run
-if not exist ".venv" (
+REM 首次运行时自动创建虚拟环境并安装依赖
+if not exist ".venv\Scripts\python.exe" (
+    echo 正在创建虚拟环境...
     python -m venv .venv
-    .venv\Scripts\pip install -q -r requirements.txt >nul 2>nul
+)
+".venv\Scripts\python.exe" -c "import fastapi, uvicorn, mcp" >nul 2>nul
+if errorlevel 1 (
+    echo 正在安装依赖，请稍候...
+    ".venv\Scripts\python.exe" -m pip install -q -r requirements.txt
+)
+".venv\Scripts\python.exe" -c "import fastapi, uvicorn, mcp" >nul 2>nul
+if errorlevel 1 (
+    echo.
+    echo   错误：依赖安装失败，请检查网络或代理设置后重试。
+    echo   可手动执行：.venv\Scripts\python.exe -m pip install -r requirements.txt
+    pause
+    exit /b 1
 )
 call .venv\Scripts\activate.bat
 
