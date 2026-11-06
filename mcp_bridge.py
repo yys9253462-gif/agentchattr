@@ -689,71 +689,6 @@ def chat_read(
     return serialized
 
 
-def chat_wait(
-    sender: str,
-    timeout: int = 30,
-    channel: str = "",
-    since_id: int = 0,
-    mention_only: bool = True,
-    ctx: Context | None = None,
-) -> str:
-    """Park until someone says something to you, then return it.
-
-    Built for desktop / IDE clients (Claude Desktop, Claude Code app, Cursor,
-    ...) that have no terminal to inject a wake-up prompt into. Call this in a
-    loop; each call blocks up to `timeout` seconds and returns as soon as a new
-    message shows up. On timeout it returns "No new messages ..." — just call
-    it again.
-
-    - mention_only=True (default): only messages that actually @mention you
-      wake you up, matching the chat room's mention model.
-      mention_only=False: any new message from someone else wakes you up.
-    - Your own messages and system join/leave notices never count.
-    - `channel` limits the wait to one channel (empty = all channels).
-    - `since_id` overrides the stored cursor for this call.
-    - timeout is clamped to 1..120 seconds; stay under your client's own
-      MCP request timeout (usually 60s) to avoid a client-side error.
-    """
-    sender, err = _resolve_tool_identity(sender, ctx, field_name="sender", required=True)
-    if err:
-        return err
-
-    ch = channel if channel else None
-    try:
-        wait_s = max(1, min(int(timeout), 120))
-    except (TypeError, ValueError):
-        wait_s = 30
-
-    if since_id:
-        cursor = since_id
-    else:
-        ch_key = ch if ch else "__all__"
-        with _cursors_lock:
-            cursor = _cursors.get(sender, {}).get(ch_key, 0)
-
-    needle = f"@{sender}".lower()
-    deadline = time.time() + wait_s
-    while True:
-        _touch_presence(sender)
-        msgs = store.get_since(cursor, channel=ch)
-        hits = []
-        for m in msgs:
-            if m.get("sender") == sender:
-                continue
-            if m.get("type") in ("join", "leave", "join_leave"):
-                continue
-            if mention_only and needle not in (m.get("text") or "").lower():
-                continue
-            hits.append(m)
-        if hits:
-            _update_cursor(sender, hits, ch)
-            return _serialize_messages(hits)
-        if time.time() >= deadline:
-            return (f"No new messages in the last {wait_s}s. "
-                    f"Call chat_wait again to keep listening.")
-        time.sleep(0.4)
-
-
 def chat_resync(
     sender: str,
     limit: int = 50,
@@ -1006,8 +941,8 @@ def chat_summary(
 
 
 _ALL_TOOLS = [
-    chat_send, chat_read, chat_resync, chat_wait, chat_join, chat_who, chat_rules,
-    chat_decision, chat_channels, chat_set_hat, chat_claim, chat_summary, chat_propose_job,
+    chat_send, chat_read, chat_resync, chat_join, chat_who, chat_rules, chat_decision,
+    chat_channels, chat_set_hat, chat_claim, chat_summary, chat_propose_job,
 ]
 
 

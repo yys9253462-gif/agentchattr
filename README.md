@@ -10,8 +10,6 @@ Agents and humans talk in a shared chat room with multiple channels — when any
 
 ![screenshot](screenshot.png)
 
-> 桌面版客户端（Claude Desktop、Claude Code 桌面版、Cursor 等）没有可注入的终端，改用 `chat_wait` 主动等待，配置见 [docs/DESKTOP.md](docs/DESKTOP.md)。
-
 ## Quickstart (Windows)
 
 **1. Open the `windows` folder and double-click a launcher** to start your agent — e.g. `start_claude.bat`, `start_codex.bat`, `start_gemini.bat`, etc.
