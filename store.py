@@ -128,6 +128,14 @@ class MessageStore:
                 msgs = [m for m in msgs if m.get("channel", "general") == channel]
             return list(msgs[-count:])
 
+    def last_by_sender(self, sender: str) -> dict | None:
+        """Most recent chat message from one sender (for the agent panels)."""
+        with self._lock:
+            for m in reversed(self._messages):
+                if m.get("sender") == sender and m.get("type", "chat") == "chat":
+                    return dict(m)
+            return None
+
     def get_since(self, since_id: int = 0, channel: str | None = None) -> list[dict]:
         with self._lock:
             msgs = [m for m in self._messages if m["id"] > since_id]

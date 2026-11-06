@@ -4658,3 +4658,206 @@ footer > #attachment-status {
 .message.grouped .msg-actions {
     margin-top: -2px;
 }
+
+/* --- 智能体侧栏（左：接入的智能体 / 右：工作台） --- */
+
+.agent-panel {
+    width: 226px;
+    min-width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-header, #1e1e2e);
+    overflow: hidden;
+}
+
+#agent-panel-left { border-right: 1px solid var(--border); }
+#agent-panel-right { border-left: 1px solid var(--border); }
+
+.agent-panel.hidden { display: none; }
+
+.agent-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+}
+
+.agent-panel-count {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+    color: var(--accent);
+}
+
+.agent-panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.agent-panel-body::-webkit-scrollbar { width: 6px; }
+.agent-panel-body::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--text-dim) 30%, transparent);
+    border-radius: 3px;
+}
+
+/* 左栏：一行一个智能体 */
+
+.agent-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 7px 8px;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+.agent-row:hover { background: color-mix(in srgb, var(--text) 6%, transparent); }
+
+.agent-avatar {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0b0b12;
+    margin-top: 1px;
+}
+
+.agent-row-main { min-width: 0; flex: 1; }
+
+.agent-row-top {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    line-height: 1.4;
+}
+
+.agent-name {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.agent-role {
+    font-size: 10px;
+    padding: 0 5px;
+    border-radius: 4px;
+    color: var(--text-dim);
+    background: color-mix(in srgb, var(--text) 8%, transparent);
+    flex-shrink: 0;
+}
+
+.agent-row-sub {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 2px;
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.agent-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: #555;
+}
+
+.agent-dot.working { background: #34d399; box-shadow: 0 0 0 2px color-mix(in srgb, #34d399 25%, transparent); }
+.agent-dot.idle { background: #60a5fa; }
+.agent-dot.offline { background: #4b5563; }
+
+.agent-state { font-size: 11px; }
+.agent-state.working { color: #34d399; }
+.agent-state.idle { color: #60a5fa; }
+.agent-state.offline { color: var(--text-dim); }
+
+.agent-seen { margin-left: auto; font-size: 10.5px; opacity: 0.7; }
+
+/* 右栏：分组 */
+
+.agent-section-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 4px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-dim);
+}
+
+.agent-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+
+.agent-work-card {
+    padding: 8px 9px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text) 7%, transparent);
+}
+
+.agent-work-card.working {
+    background: color-mix(in srgb, #34d399 7%, transparent);
+    border-color: color-mix(in srgb, #34d399 22%, transparent);
+}
+
+.agent-work-desc {
+    margin-top: 4px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--text-dim);
+    overflow-wrap: anywhere;
+}
+
+.agent-empty {
+    padding: 14px 8px;
+    text-align: center;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--text-dim);
+    opacity: 0.7;
+}
+
+.agent-empty.small { padding: 6px 4px; text-align: left; }
+
+/* 顶栏切换按钮的选中态 */
+.settings-btn.active {
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    color: var(--accent);
+}
+
+@media (max-width: 1100px) {
+    .agent-panel { width: 190px; min-width: 160px; }
+}
+
+/* 窄屏时侧栏改为浮层，避免把聊天区挤没 */
+@media (max-width: 1100px) {
+    #content-area { position: relative; }
+    .agent-panel {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        z-index: 30;
+        width: 240px;
+        min-width: 0;
+        box-shadow: 0 0 24px rgba(0, 0, 0, 0.45);
+    }
+    #agent-panel-left { left: 0; }
+    #agent-panel-right { right: 0; }
+}

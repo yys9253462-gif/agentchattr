@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>agentchattr</title>
-    <link rel="stylesheet" href="/static/style.css?v=261">
-    <link rel="stylesheet" href="/static/sessions.css?v=224">
-    <link rel="stylesheet" href="/static/jobs.css?v=226">
+    <link rel="stylesheet" href="/static/style.css?v=264">
+    <link rel="stylesheet" href="/static/sessions.css?v=227">
+    <link rel="stylesheet" href="/static/jobs.css?v=229">
     <link rel="icon" href="/static/favicon.ico">
 </head>
 <body>
@@ -23,6 +23,21 @@
             </div>
             <div class="header-right">
                 <div id="agent-status"></div>
+                <button class="settings-btn" id="agent-left-toggle" onclick="toggleAgentPanel('left')" title="接入的智能体">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="6" cy="5" r="2.4" stroke="currentColor" stroke-width="1.2"/>
+                        <path d="M1.8 13c0-2.3 1.9-3.6 4.2-3.6s4.2 1.3 4.2 3.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                        <path d="M11 3.2a2 2 0 0 1 0 3.6M12.2 9.8c1.3.5 2 1.5 2 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button class="settings-btn" id="agent-right-toggle" onclick="toggleAgentPanel('right')" title="工作台">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M1.5 11.5h13" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                        <rect x="2.5" y="7" width="2.6" height="4.5" rx="0.6" stroke="currentColor" stroke-width="1.2"/>
+                        <rect x="6.7" y="3.5" width="2.6" height="8" rx="0.6" stroke="currentColor" stroke-width="1.2"/>
+                        <rect x="10.9" y="5.5" width="2.6" height="6" rx="0.6" stroke="currentColor" stroke-width="1.2"/>
+                    </svg>
+                </button>
                 <button class="settings-btn" id="jobs-toggle" onclick="toggleJobsPanel()" title="任务">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
@@ -166,6 +181,13 @@
         </div>
 
         <div id="content-area">
+            <aside id="agent-panel-left" class="agent-panel hidden" data-side="left">
+                <div class="agent-panel-header">
+                    <span>接入的智能体</span>
+                    <span class="agent-panel-count" id="agent-count-left">0</span>
+                </div>
+                <div class="agent-panel-body" id="agent-list-left"></div>
+            </aside>
             <aside id="channel-sidebar" class="hidden">
                 <div id="channel-sidebar-top"></div>
                 <div class="channel-sidebar-header">
@@ -234,6 +256,19 @@
                     <button class="jobs-create-btn" onclick="showCreateRule()" title="添加规则">+</button>
                 </div>
                 <div id="rules-list"></div>
+            </aside>
+            <aside id="agent-panel-right" class="agent-panel hidden" data-side="right">
+                <div class="agent-panel-header">
+                    <span>工作台</span>
+                </div>
+                <div class="agent-panel-body">
+                    <div class="agent-section-title">正在做<span class="agent-panel-count" id="agent-count-working">0</span></div>
+                    <div id="agent-list-working" class="agent-group"></div>
+                    <div class="agent-section-title">空闲<span class="agent-panel-count" id="agent-count-idle">0</span></div>
+                    <div id="agent-list-idle" class="agent-group"></div>
+                    <div class="agent-section-title">离线<span class="agent-panel-count" id="agent-count-offline">0</span></div>
+                    <div id="agent-list-offline" class="agent-group"></div>
+                </div>
             </aside>
         </div>
 
@@ -370,13 +405,14 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="/static/core.js?v=224"></script>
-    <script src="/static/store.js?v=224"></script>
-    <script src="/static/sessions.js?v=225"></script>
-    <script src="/static/attachments.js?v=6"></script>
-    <script src="/static/jobs.js?v=227"></script>
-    <script src="/static/channels.js?v=227"></script>
-    <script src="/static/rules-panel.js?v=225"></script>
-    <script src="/static/chat.js?v=276"></script>
+    <script src="/static/core.js?v=227"></script>
+    <script src="/static/store.js?v=227"></script>
+    <script src="/static/sessions.js?v=228"></script>
+    <script src="/static/attachments.js?v=9"></script>
+    <script src="/static/jobs.js?v=230"></script>
+    <script src="/static/channels.js?v=230"></script>
+    <script src="/static/rules-panel.js?v=228"></script>
+    <script src="/static/chat.js?v=279"></script>
+    <script src="/static/agent-panel.js?v=4"></script>
 </body>
 </html>

@@ -16,18 +16,42 @@ class AgentTrigger:
         return self._registry.is_registered(name)
 
     def get_status(self) -> dict:
+        import time as _time
+
+        import mcp_bridge as mb
         from mcp_bridge import is_online, is_active, get_role
+
         instances = self._registry.get_all()
-        return {
-            name: {
+        now = _time.time()
+        out = {}
+        for name, info in instances.items():
+            entry = {
                 "available": is_online(name),
                 "busy": is_active(name),
                 "label": info["label"],
                 "color": info["color"],
                 "role": get_role(name),
+                # 面板用：多久之前活跃、停在哪个频道 / 任务
+                "last_seen": round(now - mb._presence.get(name, 0), 1)
+                              if name in mb._presence else None,
+                "channel": mb._last_read_channel.get(name, ""),
+                "job_id": mb._last_read_job_id.get(name, 0),
+                "job_title": "",
+                "last_text": "",
+                "last_time": "",
             }
-            for name, info in instances.items()
-        }
+            job_id = entry["job_id"]
+            if job_id and mb.jobs:
+                job = mb.jobs.get(job_id)
+                if job:
+                    entry["job_title"] = (job.get("title") or "").strip()
+            if mb.store:
+                last = mb.store.last_by_sender(name)
+                if last:
+                    entry["last_text"] = (last.get("text") or "").strip()[:120]
+                    entry["last_time"] = last.get("time", "")
+            out[name] = entry
+        return out
 
     async def trigger(self, agent_name: str, message: str = "", channel: str = "general",
                       job_id: int | None = None, **kwargs):

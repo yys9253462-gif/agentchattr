@@ -1916,6 +1916,10 @@ function updateStatus(data) {
             _syncBubbleRolePills(name);
         }
     }
+    // 侧栏（接入的智能体 / 工作台）跟随同一份状态刷新
+    if (typeof window.renderAgentPanels === 'function') {
+        try { window.renderAgentPanels(data); } catch (e) { console.warn('agent panels', e); }
+    }
 }
 
 function updateTyping(agent, active) {
