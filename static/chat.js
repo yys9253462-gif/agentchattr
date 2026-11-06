@@ -210,7 +210,7 @@ async function checkForUpdate() {
         }
 
         const label = data.state === 'upstream_update' ? '上游有更新' : '有可用更新';
-        pill.href = data.url || 'https://github.com/bcurts/agentchattr/releases';
+        pill.href = data.url || '#';
         pill.innerHTML = `<span>${label}</span><button class="update-dismiss" onclick="dismissUpdate(event, '${data.latest}')" title="忽略">&times;</button>`;
         pill.classList.remove('hidden');
     } catch {

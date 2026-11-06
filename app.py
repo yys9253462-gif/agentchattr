@@ -2754,9 +2754,7 @@ def _detect_install_kind() -> str:
             cwd=Path(__file__).parent,
         )
         url = result.stdout.strip().lower()
-        if "bcurts/agentchattr" in url:
-            return "official_git"
-        elif url:
+        if url:
             return "fork"
     except Exception:
         pass
@@ -2764,30 +2762,8 @@ def _detect_install_kind() -> str:
 
 
 def _fetch_latest_release() -> dict | None:
-    """Fetch latest release from GitHub API, with 30-min cache."""
-    import time
-    import urllib.request
-
-    now = time.time()
-    if _version_cache["data"] and (now - _version_cache["fetched_at"]) < _VERSION_CACHE_TTL:
-        return _version_cache["data"]
-
-    try:
-        req = urllib.request.Request(
-            "https://api.github.com/repos/bcurts/agentchattr/releases/latest",
-            headers={"Accept": "application/vnd.github+json", "User-Agent": "agentchattr"},
-        )
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = json.loads(resp.read())
-            result = {
-                "tag": data.get("tag_name", ""),
-                "url": data.get("html_url", ""),
-            }
-            _version_cache["data"] = result
-            _version_cache["fetched_at"] = now
-            return result
-    except Exception:
-        return _version_cache.get("data")
+    """不再向原作者仓库查询更新。"""
+    return None
 
 
 def _compare_versions(current: str, latest_tag: str) -> str:
