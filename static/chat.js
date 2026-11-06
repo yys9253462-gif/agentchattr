@@ -824,6 +824,41 @@ function dayFloatRefresh() {
 
 // --- Messages ---
 
+// --- 连发消息合并 ---
+// 同一个人在三分钟内连续发的几条，后面的不再重复头像和头部，看起来像一组。
+
+const MESSAGE_GROUP_WINDOW_MS = 3 * 60 * 1000;
+
+function messageTimestampMs(msg) {
+    if (typeof msg.timestamp === 'number') return msg.timestamp * 1000;
+    const parsed = Date.parse(msg.timestamp || '');
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function applyMessageGrouping(el, msg) {
+    // 只有普通聊天气泡参与合并；卡片、系统消息、加入提示各自独立
+    if (!el.classList.contains('self') && !el.classList.contains('other')) return;
+
+    let prev = el.previousElementSibling;
+    while (prev && !prev.classList.contains('message')) prev = prev.previousElementSibling;
+    if (!prev) return;
+    if (!prev.classList.contains('self') && !prev.classList.contains('other')) return;
+
+    if ((prev.dataset.channel || 'general') !== (msg.channel || 'general')) return;
+
+    const prevSender = (prev.dataset.sender || '').toLowerCase();
+    const curSender = (msg.sender || '').toLowerCase();
+    if (!prevSender || prevSender !== curSender) return;
+
+    const prevTs = parseFloat(prev.dataset.ts || '0');
+    const curTs = messageTimestampMs(msg);
+    if (!prevTs || !curTs) return;
+    const delta = curTs - prevTs;
+    if (delta < 0 || delta > MESSAGE_GROUP_WINDOW_MS) return;
+
+    el.classList.add('grouped');
+}
+
 function appendMessage(msg, options = {}) {
     // History replay and a live delivery can contain the same saved message.
     if (document.getElementById(`message-${msg.id}`)) return;
@@ -838,6 +873,8 @@ function appendMessage(msg, options = {}) {
     el.dataset.id = msg.id;
     const msgChannel = msg.channel || 'general';
     el.dataset.channel = msgChannel;
+    el.dataset.sender = msg.sender || '';
+    el.dataset.ts = String(messageTimestampMs(msg));
 
     if (msg.type === 'join' || msg.type === 'leave') {
         el.classList.add('join-msg');
@@ -999,6 +1036,7 @@ function appendMessage(msg, options = {}) {
     }
 
     container.appendChild(el);
+    applyMessageGrouping(el, msg);
 
     // Collapse consecutive job_created messages into a group
     if (!options.history && msg.type === 'job_created' && window._collapseJobBreadcrumbs) {

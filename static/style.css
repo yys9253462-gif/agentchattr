@@ -4625,3 +4625,36 @@ footer > #attachment-status {
         max-width: 100%;
     }
 }
+
+/* --- 连发消息合并：同一个人连续发言只保留第一条的头部 --- */
+
+.message.grouped {
+    margin-top: -2px;
+}
+
+.message.grouped .avatar-wrap {
+    display: none;
+}
+
+.message.grouped .bubble-header {
+    display: none;
+}
+
+.message.other.grouped .chat-bubble {
+    border-top-left-radius: 8px;
+}
+
+.message.self.grouped .chat-bubble {
+    border-top-right-radius: 8px;
+}
+
+/* 组内后续气泡稍微收一点内边距，堆叠感更明显 */
+.message.grouped .chat-bubble {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+/* 合并后，悬停时仍能点到「回复 / 删除」 */
+.message.grouped .msg-actions {
+    margin-top: -2px;
+}
