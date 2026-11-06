@@ -4556,3 +4556,72 @@ a.file-attachment:hover { border-color: var(--accent); }
     50% { box-shadow: 0 0 8px 2px var(--accent); }
 }
 .help-pulse { animation: helpPulse 1s ease 3; }
+
+/* --- 阅读列宽：宽屏下聊天内容居中，不再横向摊开 --- */
+
+:root {
+    --read-column: 880px;
+}
+
+#messages {
+    width: 100%;
+    max-width: var(--read-column);
+    margin: 0 auto;
+    padding-bottom: 4px;
+}
+
+footer > #input-row,
+footer > #mention-toggles-row,
+footer > #schedules-bar,
+footer > #attachments,
+footer > #attachment-status {
+    max-width: var(--read-column);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 消息密度：同一屏能看到更多上下文 */
+#messages { gap: 3px; }
+.message { padding: 3px 8px; }
+.chat-bubble {
+    padding: 9px 14px;
+    line-height: 1.65;
+    font-size: 14.5px;
+}
+
+/* 加入 / 离开提示：压扁成一条细线，不抢聊天内容的视觉重量 */
+.message.join-msg {
+    opacity: 0.38;
+    font-size: 11.5px;
+    padding: 0 8px;
+}
+
+.message.join-msg .join-dot {
+    width: 4px;
+    height: 4px;
+}
+
+/* 空频道时给一句居中的引导，避免一大片空白 */
+#messages:empty::after {
+    content: "还没有消息。在下面输入内容，用 @名字 提及某个智能体。";
+    display: block;
+    margin: 22vh auto 0;
+    max-width: 420px;
+    text-align: center;
+    color: var(--text-dim);
+    opacity: 0.55;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* 窄屏时退回满宽，不浪费空间 */
+@media (max-width: 960px) {
+    #messages,
+    footer > #input-row,
+    footer > #mention-toggles-row,
+    footer > #schedules-bar,
+    footer > #attachments,
+    footer > #attachment-status {
+        max-width: 100%;
+    }
+}
