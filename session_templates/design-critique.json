@@ -1,26 +1,26 @@
 {
   "id": "design-critique",
-  "name": "Design Critique",
-  "description": "One agent presents work, one critiques it, one synthesises the outcome.",
+  "name": "设计评议",
+  "description": "一个智能体展示作品，一个提出批评，一个汇总结论。",
   "roles": ["presenter", "critic", "synthesiser"],
   "user_required": false,
   "phases": [
     {
-      "name": "Present",
+      "name": "展示",
       "participants": ["presenter"],
-      "prompt": "Explain the work, goals, constraints, and what feedback you need.",
+      "prompt": "说明作品、目标、约束，以及你需要哪方面的反馈。",
       "turn_order": "sequential"
     },
     {
-      "name": "Critique",
+      "name": "批评",
       "participants": ["critic"],
-      "prompt": "Identify strengths, weaknesses, risks, and concrete improvements. Provide your own independent analysis.",
+      "prompt": "指出优点、缺点、风险和具体改进点。给出你自己的独立分析。",
       "turn_order": "sequential"
     },
     {
-      "name": "Synthesis",
+      "name": "汇总",
       "participants": ["synthesiser"],
-      "prompt": "Turn the discussion into prioritised recommendations: what to keep, what to change, what to investigate.",
+      "prompt": "把讨论整理成按优先级排列的建议：保留什么、修改什么、还要调查什么。",
       "turn_order": "sequential",
       "is_output": true
     }

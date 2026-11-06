@@ -348,9 +348,9 @@ def _ensure_gemini_folder_trusted(project_dir: Path) -> None:
         data[folder_key] = "TRUST_FOLDER"
         trusted_file.parent.mkdir(parents=True, exist_ok=True)
         trusted_file.write_text(json.dumps(data, indent=2) + "\n", "utf-8")
-        print(f"  Trusted folder for Gemini MCPs: {folder_key}")
+        print(f"  Gemini MCP 信任目录：{folder_key}")
     except Exception as exc:
-        print(f"  Warning: could not update Gemini trusted folders: {exc}")
+        print(f"  警告：无法更新 Gemini 信任目录：{exc}")
 
 
 def _build_provider_launch(
@@ -616,13 +616,13 @@ def main():
     try:
         registration = _register_instance(server_port, agent, args.label)
     except Exception as exc:
-        print(f"  Registration failed ({exc}).")
-        print("  Wrapper cannot continue without a registered identity.")
+        print(f"  注册失败（{exc}）。")
+        print("  未注册身份，包装器无法继续。")
         sys.exit(1)
 
     assigned_name = registration["name"]
     assigned_token = registration["token"]
-    print(f"  Registered as: {assigned_name} (slot {registration.get('slot', '?')})")
+    print(f"  已注册为：{assigned_name} (slot {registration.get('slot', '?')})")
 
     proxy = None
     proxy_url = None
@@ -633,8 +633,8 @@ def main():
     inject_cfg = _resolve_mcp_inject(agent, agent_cfg)
     inject_mode = inject_cfg.get("mcp_inject", "")
     if inject_mode and inject_mode not in _VALID_INJECT_MODES:
-        print(f"  Error: unknown mcp_inject mode '{inject_mode}' for agent '{agent}'.")
-        print(f"  Valid modes: {', '.join(sorted(_VALID_INJECT_MODES))}")
+        print(f"  错误：智能体 '{agent}' 的 mcp_inject 模式 '{inject_mode}' 未知。")
+        print(f"  可用模式：{', '.join(sorted(_VALID_INJECT_MODES))}")
         sys.exit(1)
     needs_proxy = inject_mode in ("proxy_flag", "") or not inject_mode
 
@@ -656,7 +656,7 @@ def main():
             instance_token=assigned_token,
         )
         if proxy.start() is False:
-            print("  Failed to start MCP proxy.")
+            print("  MCP 代理启动失败。")
             sys.exit(1)
         proxy_url = f"{proxy.url}{proxy_path}"
 
@@ -709,9 +709,9 @@ def main():
             proxy.token = current_token
         if changed:
             if new_name and new_name != old_name:
-                print(f"  Identity updated: {old_name} -> {new_name}")
+                print(f"  身份已更新：{old_name} -> {new_name}")
             if new_token and new_token != old_token:
-                print(f"  Session refreshed for @{current_name}")
+                print(f"  已刷新会话：@{current_name}")
             _rewrite_mcp_config(current_name, current_token)
 
         return changed
@@ -725,8 +725,8 @@ def main():
 
     resolved = shutil.which(command)
     if not resolved:
-        print(f"  Error: '{command}' not found on PATH.")
-        print("  Install it first, then try again.")
+        print(f"  错误：PATH 中找不到 '{command}'。")
+        print("  请先安装，再重试。")
         sys.exit(1)
     command = resolved
 
@@ -750,15 +750,15 @@ def main():
         project_dir=project_dir,
     )
 
-    print(f"  === {assigned_name.capitalize()} Chat Wrapper ===")
+    print(f"  === {assigned_name.capitalize()} 聊天包装器 ===")
     if not needs_proxy:
-        print(f"  MCP: direct connect ({inject_mode}) with bearer auth")
+        print(f"  MCP：直连（{inject_mode}），使用 bearer 认证")
         if mcp_settings_path:
-            print(f"  Config: {mcp_settings_path}")
+            print(f"  配置：{mcp_settings_path}")
     elif proxy_url:
-        print(f"  Local MCP proxy: {proxy_url}")
-    print(f"  @{assigned_name} mentions auto-inject MCP reads")
-    print(f"  Starting {command} in {cwd}...\n")
+        print(f"  本地 MCP 代理：{proxy_url}")
+    print(f"  @{assigned_name} 被提及时会自动注入 MCP 读取指令")
+    print(f"  正在 {cwd} 中启动 {command}...\n")
 
     def _heartbeat():
         while True:
@@ -926,14 +926,14 @@ def main():
                 headers=_auth_headers(current_token),
             )
             urllib.request.urlopen(dereg_req, timeout=5)
-            print(f"  Deregistered {current_name}")
+            print(f"  已注销 {current_name}")
         except Exception:
             pass
 
         if proxy is not None:
             proxy.stop()
 
-    print("  Wrapper stopped.")
+    print("  包装器已停止。")
 
 
 if __name__ == "__main__":

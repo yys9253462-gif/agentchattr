@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr — starts server (if not running) + Claude wrapper (auto-approve mode)
 cd /d "%~dp0.."
 
@@ -13,8 +14,8 @@ REM Pre-flight: check that claude CLI is installed
 where claude >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
-    echo   Error: "claude" was not found on PATH.
-    echo   Install it first, then try again.
+    echo   错误：PATH 中找不到 "claude"。
+    echo   请先安装，再重试。
     echo.
     pause
     exit /b 1
@@ -35,6 +36,6 @@ if %errorlevel% neq 0 (
 python wrapper.py claude --dangerously-skip-permissions
 if %errorlevel% neq 0 (
     echo.
-    echo   Agent exited unexpectedly. Check the output above.
+    echo   智能体意外退出，请查看上方输出。
     pause
 )

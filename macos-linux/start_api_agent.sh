@@ -5,8 +5,8 @@
 cd "$(dirname "$0")/.."
 
 if [ -z "$1" ]; then
-    echo "Usage: start_api_agent.sh <agent_name>"
-    echo "Example: start_api_agent.sh qwen"
+    echo "用法：start_api_agent.sh <agent_name>"
+    echo "示例：start_api_agent.sh qwen"
     exit 1
 fi
 
@@ -16,24 +16,24 @@ if command -v python3 >/dev/null 2>&1; then
 elif command -v python >/dev/null 2>&1; then
     PYTHON_BIN="python"
 else
-    echo "Python 3 is required but was not found on PATH."
+    echo "需要 Python 3，但 PATH 中找不到。"
     exit 1
 fi
 
 ensure_venv() {
     if [ -d ".venv" ] && [ ! -x ".venv/bin/python" ]; then
-        echo "Recreating .venv for this platform..."
+        echo "正在为当前平台重建 .venv..."
         rm -rf .venv
     fi
 
     if [ ! -x ".venv/bin/python" ]; then
-        echo "Creating virtual environment..."
+        echo "正在创建虚拟环境..."
         "$PYTHON_BIN" -m venv .venv || {
-            echo "Error: failed to create .venv with $PYTHON_BIN."
+            echo "错误：无法用 $PYTHON_BIN 创建 .venv。"
             exit 1
         }
         .venv/bin/python -m pip install -q -r requirements.txt || {
-            echo "Error: failed to install Python dependencies."
+            echo "错误：Python 依赖安装失败。"
             exit 1
         }
     fi

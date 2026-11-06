@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr — starts server (if not running) + Antigravity (agy) wrapper
 cd /d "%~dp0.."
 
@@ -21,9 +22,9 @@ REM Pre-flight: check that the agy CLI is installed
 where agy >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
-    echo   Error: "agy" ^(Antigravity CLI^) was not found on PATH.
-    echo   Install it first, then try again.
-    echo   Note: run "agy" once with no args to sign in before using it here.
+    echo   错误：PATH 中找不到 "agy" ^(Antigravity CLI^)。
+    echo   请先安装，再重试。
+    echo   注意：在这里使用前，先不带参数运行一次 "agy" 完成登录。
     echo.
     pause
     exit /b 1
@@ -46,5 +47,5 @@ python wrapper.py antigravity
 REM Always pause on exit so the window never vanishes silently — lets you read
 REM any error above whether the wrapper crashed or exited cleanly.
 echo.
-echo   Antigravity wrapper exited. Review the output above.
+echo   Antigravity 包装器已退出，请查看上方输出。
 pause

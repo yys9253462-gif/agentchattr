@@ -36,11 +36,11 @@ def _check_tmux():
     """Verify tmux is installed, exit with helpful message if not."""
     if shutil.which("tmux"):
         return
-    print("\n  Error: tmux is required for auto-trigger on Mac/Linux.")
+    print("\n  错误：在 Mac/Linux 上自动触发需要 tmux。")
     if sys.platform == "darwin":
-        print("  Install: brew install tmux")
+        print("  安装：brew install tmux")
     else:
-        print("  Install: apt install tmux  (or yum/pacman equivalent)")
+        print("  安装：apt install tmux（或 yum/pacman 等价命令）")
     sys.exit(1)
 
 
@@ -229,9 +229,9 @@ def run_agent(
     inject_fn = lambda text: inject(text, tmux_session=session_name, delay=inject_delay)
     start_watcher(inject_fn)
 
-    print(f"  Using tmux session: {session_name}")
-    print(f"  Detach: Ctrl+B, D  (agent keeps running)")
-    print(f"  Reattach: tmux attach -t {session_name}\n")
+    print(f"  使用 tmux 会话：{session_name}")
+    print(f"  分离：Ctrl+B, D（智能体继续运行）")
+    print(f"  重新连接：tmux attach -t {session_name}\n")
 
     while True:
         try:
@@ -248,7 +248,7 @@ def run_agent(
                 env=env,
             )
             if result.returncode != 0:
-                print(f"  Error: failed to create tmux session (exit {result.returncode})")
+                print(f"  错误：创建 tmux 会话失败（退出码 {result.returncode})")
                 break
 
             # Attach — blocks until agent exits or user detaches (Ctrl+B, D)
@@ -258,8 +258,8 @@ def run_agent(
             if _session_exists(session_name):
                 # Session still alive — user detached, agent running in background.
                 # Keep the wrapper alive so the local proxy and heartbeats survive.
-                print(f"\n  Detached. {agent.capitalize()} still running in tmux.")
-                print(f"  Reattach: tmux attach -t {session_name}")
+                print(f"\n  已分离。{agent.capitalize()} 仍在 tmux 中运行。")
+                print(f"  重新连接：tmux attach -t {session_name}")
                 while _session_exists(session_name):
                     time.sleep(1)
                 break
@@ -268,8 +268,8 @@ def run_agent(
             if no_restart:
                 break
 
-            print(f"\n  {agent.capitalize()} exited.")
-            print(f"  Restarting in 3s... (Ctrl+C to quit)")
+            print(f"\n  {agent.capitalize()} 已退出。")
+            print(f"  3 秒后重启...（Ctrl+C 退出）")
             time.sleep(3)
         except KeyboardInterrupt:
             # Kill the tmux session on Ctrl+C

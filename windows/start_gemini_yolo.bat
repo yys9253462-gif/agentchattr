@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr — starts server (if not running) + Gemini wrapper (auto-approve mode)
 cd /d "%~dp0.."
 
@@ -13,8 +14,8 @@ REM Pre-flight: check that gemini CLI is installed
 where gemini >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
-    echo   Error: "gemini" was not found on PATH.
-    echo   Install it first, then try again.
+    echo   错误：PATH 中找不到 "gemini"。
+    echo   请先安装，再重试。
     echo.
     pause
     exit /b 1

@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr — starts server (if not running) + MiniMax API agent wrapper
 REM Usage: start_minimax.bat
 REM Requires MINIMAX_API_KEY environment variable.
@@ -14,9 +15,9 @@ call .venv\Scripts\activate.bat
 REM Check API key
 if "%MINIMAX_API_KEY%"=="" (
     echo.
-    echo   Error: MINIMAX_API_KEY environment variable is not set.
-    echo   Get an API key at https://platform.minimax.io
-    echo   Then: set MINIMAX_API_KEY=your-key-here
+    echo   错误：未设置 MINIMAX_API_KEY 环境变量。
+    echo   在此获取 API 密钥：https://platform.minimax.io
+    echo   然后：set MINIMAX_API_KEY=your-key-here
     echo.
     pause
     exit /b 1
@@ -37,6 +38,6 @@ if %errorlevel% neq 0 (
 python wrapper_api.py minimax
 if %errorlevel% neq 0 (
     echo.
-    echo   Agent exited unexpectedly. Check the output above.
+    echo   智能体意外退出，请查看上方输出。
     pause
 )

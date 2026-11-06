@@ -132,7 +132,7 @@ function remindAgents() {
         .then(() => {
             if (btn) {
                 const orig = btn.textContent;
-                btn.textContent = 'Queued — next trigger';
+                btn.textContent = '已排队，下次触发时发送';
                 setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2500);
             }
         })
@@ -172,21 +172,21 @@ function renderRulesPanel() {
 
     // Update header counter
     const counter = document.getElementById('rules-counter');
-    if (counter) counter.textContent = `${activeCount} active`;
+    if (counter) counter.textContent = `${activeCount} 条已启用`;
 
     if (panelRules.length === 0) {
         const ghost = document.createElement('div');
         ghost.className = 'sb-ghost-card';
         ghost.innerHTML = `
-            <div class="sb-ghost-title">No rules yet</div>
-            <div class="sb-ghost-meta">Tell your agents how to work</div>
+            <div class="sb-ghost-title">还没有规则</div>
+            <div class="sb-ghost-meta">告诉你的 agent 该怎么做事</div>
         `;
         ghost.onclick = () => showCreateRule();
         list.appendChild(ghost);
         // Centered helper text
         const helper = document.createElement('div');
         helper.className = 'rules-centered-hint';
-        helper.textContent = 'New rules are sent on the next agent trigger';
+        helper.textContent = '新规则会在 agent 下次触发时发送';
         list.appendChild(helper);
         if (savedForm) {
             list.prepend(savedForm);
@@ -200,9 +200,9 @@ function renderRulesPanel() {
 
     // Group order: drafts, active, archive (mirrors jobs: to-do, active, closed)
     const groups = [
-        { key: 'draft', label: 'DRAFTS', items: [] },
-        { key: 'active', label: 'ACTIVE', items: [] },
-        { key: 'archived', label: 'ARCHIVE', items: [] },
+        { key: 'draft', label: '草稿', items: [] },
+        { key: 'active', label: '已启用', items: [] },
+        { key: 'archived', label: '归档', items: [] },
     ];
     for (const r of panelRules) {
         const status = normalize(r.status);
@@ -297,7 +297,7 @@ function renderRulesPanel() {
         if (group.key === 'archived' && group.items.length > 0) {
             const trashZone = document.createElement('div');
             trashZone.className = 'archive-trash-zone visible';
-            trashZone.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M6 4V3h4v1M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="archive-trash-hint">Drag here to delete</span>`;
+            trashZone.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M6 4V3h4v1M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="archive-trash-hint">拖到这里删除</span>`;
 
             trashZone.addEventListener('dragover', (e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; trashZone.classList.add('hover'); });
             trashZone.addEventListener('dragleave', () => { trashZone.classList.remove('hover'); });
@@ -323,7 +323,7 @@ function renderRulesPanel() {
     // Centered helper text at bottom
     const helper = document.createElement('div');
     helper.className = 'rules-centered-hint';
-    helper.textContent = 'New rules are sent on the next agent trigger';
+    helper.textContent = '新规则会在 agent 下次触发时发送';
     list.appendChild(helper);
 
     // Re-insert preserved create form at top
@@ -371,10 +371,10 @@ function showCreateRule() {
     const form = document.createElement('div');
     form.className = 'job-create-form';
     form.innerHTML = `
-        <input type="text" placeholder="Write a short rule agents should follow" class="rule-create-text" maxlength="160" autofocus>
+        <input type="text" placeholder="写一条 agent 要遵守的简短规则" class="rule-create-text" maxlength="160" autofocus>
         <div class="job-create-actions">
-            <button class="cancel-btn" onclick="this.closest('.job-create-form').remove()">Cancel</button>
-            <button class="create-btn" onclick="submitCreateRule(this)">Create</button>
+            <button class="cancel-btn" onclick="this.closest('.job-create-form').remove()">取消</button>
+            <button class="create-btn" onclick="submitCreateRule(this)">创建</button>
         </div>
     `;
     list.prepend(form);
@@ -433,10 +433,10 @@ function editRule(id) {
         <textarea class="rule-edit-field" maxlength="${RULE_MAX_CHARS}" rows="1" data-limit="${RULE_MAX_CHARS}">${window.escapeHtml(d.text || '')}</textarea>
         <div class="char-counter">${(d.text || '').length}/${RULE_MAX_CHARS}</div>
         <div class="rule-edit-actions">
-            <button class="save-btn" onclick="event.stopPropagation();saveRuleEdit(${id})">Save</button>
-            <button class="cancel-btn" onclick="event.stopPropagation();cancelRuleEdit(${id})">Cancel</button>
+            <button class="save-btn" onclick="event.stopPropagation();saveRuleEdit(${id})">保存</button>
+            <button class="cancel-btn" onclick="event.stopPropagation();cancelRuleEdit(${id})">取消</button>
             <span style="flex:1"></span>
-            <button class="delete-inline-btn" onclick="event.stopPropagation();deleteRule(${id})">Delete</button>
+            <button class="delete-inline-btn" onclick="event.stopPropagation();deleteRule(${id})">删除</button>
         </div>
     `;
     card.appendChild(editArea);
@@ -493,9 +493,9 @@ function startDeleteRule(id) {
     actions.dataset.confirming = '1';
     actions.style.opacity = '1';
     actions.innerHTML = `
-        <span style="font-size:11px;color:var(--error-color);white-space:nowrap;margin-right:4px">Delete?</span>
-        <button class="confirm-yes" style="background:var(--error-color);color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" onclick="deleteRule(${id})">Yes</button>
-        <button class="confirm-no" style="background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" onclick="cancelDeleteRule(${id})">No</button>
+        <span style="font-size:11px;color:var(--error-color);white-space:nowrap;margin-right:4px">删除？</span>
+        <button class="confirm-yes" style="background:var(--error-color);color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" onclick="deleteRule(${id})">是</button>
+        <button class="confirm-no" style="background:transparent;color:var(--text-dim);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit" onclick="cancelDeleteRule(${id})">否</button>
     `;
 }
 
@@ -533,10 +533,10 @@ async function resolveRuleProposal(msgId, action) {
         });
         if (!response.ok) {
             const payload = await response.json().catch(() => ({}));
-            throw new Error(payload.error || 'Please try again.');
+            throw new Error(payload.error || '请重试。');
         }
     } catch (e) {
-        showToast(`Could not update rule: ${e.message}`, 'error');
+        showToast(`更新规则失败：${e.message}`, 'error');
     }
 }
 
@@ -549,10 +549,10 @@ async function dismissRuleProposal(msgId) {
         });
         if (!response.ok) {
             const payload = await response.json().catch(() => ({}));
-            throw new Error(payload.error || 'Please try again.');
+            throw new Error(payload.error || '请重试。');
         }
     } catch (e) {
-        showToast(`Could not dismiss rule: ${e.message}`, 'error');
+        showToast(`忽略规则失败：${e.message}`, 'error');
     }
 }
 

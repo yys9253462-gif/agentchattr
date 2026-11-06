@@ -32,7 +32,7 @@ function _renderSessionDraftResolvedCard(label, detail = '') {
     return `
         <div class="proposal-card session-proposal-card proposal-resolved">
             <div class="proposal-header">
-                <span class="proposal-pill">Session Proposal</span>
+                <span class="proposal-pill">会话提案</span>
             </div>
             <div class="proposal-title">${window.escapeHtml(label)}</div>
             ${detail ? `<div class="proposal-body session-proposal-desc">${window.escapeHtml(detail)}</div>` : ''}
@@ -48,7 +48,7 @@ window._messageRenderers['session_start'] = function (el, msg) {
 window._messageRenderers['session_end'] = function (el, msg) {
     el.classList.add('system-msg', 'session-banner', 'session-banner-end');
     const outputId = msg.metadata?.output_message_id;
-    const jumpLink = outputId ? ` <span class="session-output-link" onclick="scrollToSessionOutput(${outputId})">View output</span>` : '';
+    const jumpLink = outputId ? ` <span class="session-output-link" onclick="scrollToSessionOutput(${outputId})">查看产出</span>` : '';
     el.innerHTML = `<span class="session-banner-icon">&#9632;</span> <strong>${window.escapeHtml(msg.text)}</strong>${jumpLink}`;
 };
 
@@ -77,22 +77,22 @@ window._messageRenderers['session_draft'] = function (el, msg) {
 
     if (isSuperseded) {
         el.classList.add('session-draft-superseded');
-        el.innerHTML = _renderSessionDraftResolvedCard('Superseded draft', `Replaced by revision ${revision}.`);
+        el.innerHTML = _renderSessionDraftResolvedCard('已被取代的草稿', `已由第 ${revision} 版取代。`);
     } else if (!valid) {
         el.classList.add('session-draft-invalid');
         const errorList = errors.map(e => `<li>${window.escapeHtml(e)}</li>`).join('');
         el.innerHTML = `
             <div class="proposal-card session-proposal-card session-proposal-invalid">
                 <div class="proposal-header">
-                    <span class="proposal-pill">Session Proposal</span>
+                    <span class="proposal-pill">会话提案</span>
                     <span class="proposal-author" style="color: ${proposedByColor}">${window.escapeHtml(proposedBy)}</span>
                 </div>
-                <div class="proposal-title">Invalid session draft</div>
-                <div class="proposal-body session-proposal-desc">This draft needs changes before it can be run or saved.</div>
+                <div class="proposal-title">会话草稿无效</div>
+                <div class="proposal-body session-proposal-desc">此草稿需修改后才能运行或保存。</div>
                 <ul class="session-draft-errors">${errorList}</ul>
                 <div class="proposal-actions">
-                    <button class="proposal-request-changes" onclick="requestDraftChanges('${window.escapeHtml(draftId)}', '${window.escapeHtml(proposedBy)}', ${msg.id})">Request Changes</button>
-                    <button class="proposal-dismiss" onclick="dismissDraft(${msg.id})">Dismiss</button>
+                    <button class="proposal-request-changes" onclick="requestDraftChanges('${window.escapeHtml(draftId)}', '${window.escapeHtml(proposedBy)}', ${msg.id})">要求修改</button>
+                    <button class="proposal-dismiss" onclick="dismissDraft(${msg.id})">忽略</button>
                 </div>
             </div>`;
     } else {
@@ -113,13 +113,13 @@ window._messageRenderers['session_draft'] = function (el, msg) {
                 </div>
             </div>`;
         }).join('');
-        const metaLabel = revision > 1 ? `rev ${revision}` : '';
+        const metaLabel = revision > 1 ? `第 ${revision} 版` : '';
         el.dataset.draftTemplate = JSON.stringify(tmpl);
         el.dataset.draftMsgId = msg.id;
         el.innerHTML = `
             <div class="proposal-card session-proposal-card">
                 <div class="proposal-header">
-                    <span class="proposal-pill">Session Proposal</span>
+                    <span class="proposal-pill">会话提案</span>
                     <span class="proposal-author" style="color: ${proposedByColor}">${window.escapeHtml(proposedBy)}</span>
                     ${metaLabel ? `<span class="session-draft-meta">${metaLabel}</span>` : ''}
                 </div>
@@ -129,10 +129,10 @@ window._messageRenderers['session_draft'] = function (el, msg) {
                     ${phasesDetailHtml}
                 </div>
                 <div class="proposal-actions">
-                    <button class="proposal-accept" onclick="runDraft(${msg.id})">Run</button>
-                    <button class="proposal-request-changes session-draft-btn-save" onclick="saveDraft(${msg.id}, this)">Save Template</button>
-                    <button class="proposal-request-changes" onclick="requestDraftChanges('${window.escapeHtml(draftId)}', '${window.escapeHtml(proposedBy)}', ${msg.id})">Request Changes</button>
-                    <button class="proposal-dismiss" onclick="dismissDraft(${msg.id})">Dismiss</button>
+                    <button class="proposal-accept" onclick="runDraft(${msg.id})">运行</button>
+                    <button class="proposal-request-changes session-draft-btn-save" onclick="saveDraft(${msg.id}, this)">保存模板</button>
+                    <button class="proposal-request-changes" onclick="requestDraftChanges('${window.escapeHtml(draftId)}', '${window.escapeHtml(proposedBy)}', ${msg.id})">要求修改</button>
+                    <button class="proposal-dismiss" onclick="dismissDraft(${msg.id})">忽略</button>
                 </div>
             </div>`;
         // Supersede older revisions of the same draft
@@ -244,7 +244,7 @@ function updateSessionBar() {
         const target = otherSessions[0];
         const extraCount = otherSessions.length - 1;
         const targetChannel = target.channel || 'general';
-        const targetName = target.template_name || target.template_id || 'Session';
+        const targetName = target.template_name || target.template_id || '会话';
         const channelListText = otherSessions.map(session => `#${session.channel || 'general'}`).join(', ');
 
         sessionIndicatorTargetChannel = targetChannel;
@@ -252,16 +252,16 @@ function updateSessionBar() {
         bar.classList.remove('hidden');
         bar.classList.add('session-elsewhere');
         templateEl.textContent = otherSessions.length === 1
-            ? `Session active in #${targetChannel}`
-            : `${otherSessions.length} sessions active elsewhere`;
+            ? `#${targetChannel} 中有进行中的会话`
+            : `其他频道有 ${otherSessions.length} 个进行中的会话`;
         phaseEl.textContent = otherSessions.length === 1
             ? targetName
             : channelListText;
         waitingEl.style.display = 'none';
         if (jumpBtn) {
             jumpBtn.textContent = extraCount > 0
-                ? `Go to #${targetChannel} (+${extraCount})`
-                : `Go to #${targetChannel}`;
+                ? `前往 #${targetChannel}（+${extraCount}）`
+                : `前往 #${targetChannel}`;
             jumpBtn.classList.remove('hidden');
             jumpBtn.style.display = '';
         }
@@ -274,7 +274,7 @@ function updateSessionBar() {
     sessionIndicatorTargetChannel = null;
     const s = activeSession;
     const templateName = s.template_name || s.template_id || '?';
-    const phaseName = s.phase_name || `Phase ${(s.current_phase || 0) + 1}`;
+    const phaseName = s.phase_name || `阶段 ${(s.current_phase || 0) + 1}`;
     const totalPhases = s.total_phases || '?';
     const phaseNum = (s.current_phase || 0) + 1;
 
@@ -288,13 +288,13 @@ function updateSessionBar() {
 
     const waitingAgent = s.current_agent || s.waiting_on;
     if (s.state !== 'paused' && s.choice_message_id != null) {
-        waitingEl.textContent = 'Waiting for your choice';
+        waitingEl.textContent = '等待你做选择';
         waitingEl.style.display = '';
     } else if (s.state === 'waiting' && waitingAgent) {
-        waitingEl.textContent = `Waiting for ${waitingAgent}`;
+        waitingEl.textContent = `等待 ${waitingAgent}`;
         waitingEl.style.display = '';
     } else if (s.state === 'paused') {
-        waitingEl.textContent = 'Paused';
+        waitingEl.textContent = '已暂停';
         waitingEl.style.display = '';
     } else {
         waitingEl.style.display = 'none';
@@ -368,7 +368,7 @@ function buildSessionCastEditor(tmpl, cast, assignees) {
         return `<div class="session-cast-phase">
             <div class="session-cast-phase-head">
                 <span class="session-cast-phase-num">${idx + 1}.</span>
-                <span class="session-cast-phase-name">${window.escapeHtml(phase.name || `Phase ${idx + 1}`)}</span>
+                <span class="session-cast-phase-name">${window.escapeHtml(phase.name || `阶段 ${idx + 1}`)}</span>
             </div>
             <div class="session-cast-phase-list">${participantRows}</div>
         </div>`;
@@ -390,7 +390,7 @@ function showSessionLauncher() {
 
     let templateOptions = sessionTemplates.map(t =>
         `<div class="session-tmpl-card" onclick="showCastPreview('${window.escapeHtml(t.id)}')" title="${window.escapeHtml(t.description || '')}">
-            ${t.is_custom ? `<span class="session-tmpl-delete-wrap"><button class="session-tmpl-delete" onclick="toggleDeleteSessionTemplateConfirm(this, '${window.escapeHtml(t.id)}', event)" title="Delete custom template">Delete</button></span>` : ''}
+            ${t.is_custom ? `<span class="session-tmpl-delete-wrap"><button class="session-tmpl-delete" onclick="toggleDeleteSessionTemplateConfirm(this, '${window.escapeHtml(t.id)}', event)" title="删除自定义模板">删除</button></span>` : ''}
             <div class="session-tmpl-name">${window.escapeHtml(t.name)}</div>
             <div class="session-tmpl-desc">${window.escapeHtml(t.description || '')}</div>
             <div class="session-tmpl-roles">${(t.roles || []).map(r => `<span class="session-role-pill">${window.escapeHtml(r)}</span>`).join(' ')}</div>
@@ -404,23 +404,23 @@ function showSessionLauncher() {
     ).join('');
     const designCard = `
         <div class="session-tmpl-card session-design-card">
-            <div class="session-tmpl-name">+ Design a session</div>
-            <div class="session-tmpl-desc">Ask an agent to draft a custom session template</div>
+            <div class="session-tmpl-name">+ 设计会话</div>
+            <div class="session-tmpl-desc">让 agent 起草一个自定义会话模板</div>
             <div class="session-design-row">
                 <select id="session-design-agent" class="session-design-select">${agentOptions}</select>
-                <input id="session-design-desc" type="text" class="session-design-input" placeholder="Describe the session you want..." />
-                <button class="session-draft-btn run" onclick="sendDesignRequest()">Ask</button>
+                <input id="session-design-desc" type="text" class="session-design-input" placeholder="描述你想要的会话……" />
+                <button class="session-draft-btn run" onclick="sendDesignRequest()">发送</button>
             </div>
         </div>`;
 
     modal.innerHTML = `
         <div class="session-launcher-dialog">
             <div class="session-launcher-header">
-                <span>Start a Session</span>
+                <span>开始会话</span>
                 <button onclick="this.closest('.session-launcher-overlay').remove()">&times;</button>
             </div>
             <div class="session-launcher-goal">
-                <input id="session-goal-input" type="text" placeholder="Goal (optional) -- what should this session achieve?" />
+                <input id="session-goal-input" type="text" placeholder="目标（可选）：这个会话要达成什么？" />
             </div>
             <div id="session-step-templates">
                 <div class="session-launcher-templates">${templateOptions}${designCard}</div>
@@ -444,9 +444,9 @@ async function sendDesignRequest() {
             headers: { 'Content-Type': 'application/json', 'X-Session-Token': window.SESSION_TOKEN },
             body: JSON.stringify({ agent: agent, description: desc, channel: window.activeChannel, sender: window.username }),
         });
-        if (!res.ok) alert('Failed to send design request (HTTP ' + res.status + ')');
+        if (!res.ok) alert('发送设计请求失败（HTTP ' + res.status + ')');
     } catch (e) {
-        alert('Error: ' + e.message);
+        alert('出错：' + e.message);
     }
 }
 
@@ -472,10 +472,10 @@ function showCastPreview(templateId) {
     castStep.innerHTML = `
         <div class="session-cast-header">
             <button class="session-back-btn" onclick="sessionCastBack()">&larr;</button>
-            <span>${window.escapeHtml(tmpl.name)} -- Cast</span>
+            <span>${window.escapeHtml(tmpl.name)} —— 分配角色</span>
         </div>
         <div class="session-cast-list">${roleRows}</div>
-        <button class="session-start-btn" onclick="launchSessionWithCast('${window.escapeHtml(templateId)}')">Start Session</button>
+        <button class="session-start-btn" onclick="launchSessionWithCast('${window.escapeHtml(templateId)}')">开始会话</button>
     `;
 }
 
@@ -513,10 +513,10 @@ async function launchSessionWithCast(templateId) {
         });
         if (!res.ok) {
             const data = await res.json();
-            alert(data.error || 'Failed to start session');
+            alert(data.error || '启动会话失败');
         }
     } catch (e) {
-        alert('Error starting session: ' + e.message);
+        alert('启动会话出错：' + e.message);
     }
 }
 
@@ -529,7 +529,7 @@ function clearEndSessionConfirm() {
     const confirm = document.getElementById('session-end-confirm');
     if (confirm) confirm.remove();
     if (btn) {
-        btn.textContent = 'End Session';
+        btn.textContent = '结束会话';
         btn.classList.remove('confirming');
     }
 }
@@ -544,17 +544,17 @@ function toggleEndSessionConfirm(event) {
         return;
     }
 
-    btn.textContent = 'End Session?';
+    btn.textContent = '结束会话？';
     btn.classList.add('confirming');
 
     const confirmWrap = document.createElement('span');
     confirmWrap.id = 'session-end-confirm';
     confirmWrap.className = 'session-inline-confirm';
     confirmWrap.innerHTML = `
-        <button class="session-inline-confirm-yes ch-confirm-yes" title="Confirm end session">
+        <button class="session-inline-confirm-yes ch-confirm-yes" title="确认结束会话">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5 6.5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="session-inline-confirm-no ch-confirm-no" title="Cancel">
+        <button class="session-inline-confirm-no ch-confirm-no" title="取消">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
     `;
@@ -580,10 +580,10 @@ async function endActiveSession() {
         });
         if (!res.ok) {
             const data = await res.json();
-            alert(data.error || 'Failed to end session');
+            alert(data.error || '结束会话失败');
         }
     } catch (e) {
-        alert('Error ending session: ' + e.message);
+        alert('结束会话出错：' + e.message);
     } finally {
         clearEndSessionConfirm();
     }
@@ -612,8 +612,8 @@ function _supersedePreviousDrafts(draftId, currentRevision) {
             if (!card.classList.contains('session-draft-superseded')) {
                 card.classList.add('session-draft-superseded');
                 card.innerHTML = _renderSessionDraftResolvedCard(
-                    `Superseded (rev ${card.dataset.draftRevision})`,
-                    'A newer revision is now the active draft.'
+                    `已被取代（第 ${card.dataset.draftRevision} 版）`,
+                    '当前生效的是更新的版本。'
                 );
             }
         }
@@ -647,15 +647,15 @@ function showDraftCastPreview(tmpl, draftMsgId) {
     modal.innerHTML = `
         <div class="session-launcher-dialog">
             <div class="session-launcher-header">
-                <span>${window.escapeHtml(tmpl.name || '?')} -- Cast</span>
+                <span>${window.escapeHtml(tmpl.name || '?')} —— 分配角色</span>
                 <button onclick="this.closest('.session-launcher-overlay').remove()">&times;</button>
             </div>
             <div class="session-launcher-goal">
-                <input id="session-goal-input" type="text" placeholder="Goal (optional)" />
+                <input id="session-goal-input" type="text" placeholder="目标（可选）" />
             </div>
             <div id="session-step-cast">
                 <div class="session-cast-list">${roleRows}</div>
-                <button class="session-start-btn" onclick="launchDraftSession(${draftMsgId})">Start Session</button>
+                <button class="session-start-btn" onclick="launchDraftSession(${draftMsgId})">开始会话</button>
             </div>
         </div>
     `;
@@ -688,10 +688,10 @@ async function launchDraftSession(draftMsgId) {
         });
         if (!res.ok) {
             const data = await res.json();
-            alert(data.error || 'Failed to start session from draft');
+            alert(data.error || '从草稿启动会话失败');
         }
     } catch (e) {
-        alert('Error: ' + e.message);
+        alert('出错：' + e.message);
     }
 }
 
@@ -704,17 +704,17 @@ async function saveDraft(msgId, btn) {
         });
         if (res.ok) {
             if (btn) {
-                btn.textContent = 'Saved';
+                btn.textContent = '已保存';
                 btn.disabled = true;
                 btn.classList.add('saved');
             }
             fetchSessionTemplates();
         } else {
             const data = await res.json();
-            alert(data.error || 'Failed to save template');
+            alert(data.error || '保存模板失败');
         }
     } catch (e) {
-        alert('Error: ' + e.message);
+        alert('出错：' + e.message);
     }
 }
 
@@ -722,7 +722,7 @@ function clearSessionTemplateDeleteConfirms() {
     document.querySelectorAll('.session-tmpl-delete-confirm').forEach(el => el.remove());
     document.querySelectorAll('.session-tmpl-delete.confirming').forEach(btn => {
         btn.classList.remove('confirming');
-        btn.textContent = 'Delete';
+        btn.textContent = '删除';
     });
 }
 
@@ -737,15 +737,15 @@ function toggleDeleteSessionTemplateConfirm(btn, templateId, event) {
 
     clearSessionTemplateDeleteConfirms();
     btn.classList.add('confirming');
-    btn.textContent = 'Delete?';
+    btn.textContent = '删除？';
 
     const confirmWrap = document.createElement('span');
     confirmWrap.className = 'session-tmpl-delete-confirm';
     confirmWrap.innerHTML = `
-        <button class="session-inline-confirm-yes ch-confirm-yes" title="Confirm delete">
+        <button class="session-inline-confirm-yes ch-confirm-yes" title="确认删除">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5 6.5-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <button class="session-inline-confirm-no ch-confirm-no" title="Cancel">
+        <button class="session-inline-confirm-no ch-confirm-no" title="取消">
             <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
         </button>
     `;
@@ -772,10 +772,10 @@ async function deleteSessionTemplate(templateId) {
             showSessionLauncher();
         } else {
             const data = await res.json();
-            alert(data.error || 'Failed to delete template');
+            alert(data.error || '删除模板失败');
         }
     } catch (e) {
-        alert('Error: ' + e.message);
+        alert('出错：' + e.message);
     } finally {
         clearSessionTemplateDeleteConfirms();
     }
@@ -800,10 +800,10 @@ function requestDraftChanges(draftId, proposedBy, msgId) {
     const inputRow = document.createElement('div');
     inputRow.className = 'draft-changes-input';
     inputRow.innerHTML = `
-        <textarea class="draft-changes-textarea" rows="2" placeholder="What changes do you want?"></textarea>
+        <textarea class="draft-changes-textarea" rows="2" placeholder="你希望怎么改？"></textarea>
         <div class="draft-changes-btns">
-            <button class="session-draft-btn run" onclick="submitDraftChanges('${window.escapeHtml(draftId)}', '${window.escapeHtml(proposedBy)}', ${msgId})">Send</button>
-            <button class="session-draft-btn dismiss" onclick="dismissDraftChanges(this)">Cancel</button>
+            <button class="session-draft-btn run" onclick="submitDraftChanges('${window.escapeHtml(draftId)}', '${window.escapeHtml(proposedBy)}', ${msgId})">发送</button>
+            <button class="session-draft-btn dismiss" onclick="dismissDraftChanges(this)">取消</button>
         </div>
     `;
     actions.after(inputRow);
@@ -836,7 +836,7 @@ function submitDraftChanges(draftId, proposedBy, msgId) {
             channel: window.activeChannel,
         }));
     } else {
-        alert('Connection lost. Reconnect and try again.');
+        alert('连接已断开，请重新连接后再试。');
         return;
     }
     if (inputRow) inputRow.remove();
@@ -847,10 +847,10 @@ function dismissDraft(msgId) {
         method: 'POST',
         headers: { 'X-Session-Token': window.SESSION_TOKEN },
     }).then((res) => {
-        if (!res.ok) alert('Failed to dismiss session proposal (HTTP ' + res.status + ')');
+        if (!res.ok) alert('忽略会话提案失败（HTTP ' + res.status + ')');
     }).catch((e) => {
         console.error('Failed to demote session draft:', e);
-        alert('Failed to dismiss session proposal');
+        alert('忽略会话提案失败');
     });
 }
 

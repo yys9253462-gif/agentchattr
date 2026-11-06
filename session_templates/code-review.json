@@ -1,32 +1,32 @@
 {
   "id": "code-review",
-  "name": "Code Review",
-  "description": "Structured code review with builder, reviewer, and red team.",
+  "name": "代码评审",
+  "description": "由构建者、评审者和红队进行的结构化代码评审。",
   "roles": ["builder", "reviewer", "red_team", "synthesiser"],
   "user_required": false,
   "phases": [
     {
-      "name": "Submit",
+      "name": "提交",
       "participants": ["builder"],
-      "prompt": "Present the code or feature you want reviewed. Explain what changed and why.",
+      "prompt": "展示需要评审的代码或功能，说明改了什么以及原因。",
       "turn_order": "sequential"
     },
     {
-      "name": "Review",
+      "name": "评审",
       "participants": ["reviewer", "red_team"],
-      "prompt": "Review the submission. Identify issues, suggest improvements. Be specific and evidence-based.",
+      "prompt": "评审提交内容，指出问题并提出改进建议。要具体，并给出依据。",
       "turn_order": "sequential"
     },
     {
-      "name": "Respond",
+      "name": "回应",
       "participants": ["builder"],
-      "prompt": "Address the feedback. What will you change? What do you disagree with and why?",
+      "prompt": "回应反馈：你会改什么？哪些不同意，为什么？",
       "turn_order": "sequential"
     },
     {
-      "name": "Summary",
+      "name": "总结",
       "participants": ["synthesiser"],
-      "prompt": "Summarise: what was agreed, what changes are needed, what remains unresolved.",
+      "prompt": "总结：达成了哪些共识，需要做哪些修改，还有什么未解决。",
       "turn_order": "sequential",
       "is_output": true
     }

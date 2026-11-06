@@ -49,7 +49,7 @@ def main():
 
     config_path = ROOT / "config.toml"
     if not config_path.exists():
-        print(f"Error: {config_path} not found")
+        print(f"错误：找不到 {config_path}")
         sys.exit(1)
 
     config = load_config(ROOT)
@@ -128,18 +128,18 @@ def main():
 
     # --- Security: warn if binding to a non-localhost address ---
     if host not in ("127.0.0.1", "localhost", "::1"):
-        print(f"\n  !! SECURITY WARNING — binding to {host} !!")
-        print("  This exposes agentchattr to your local network.")
+        print(f"\n  !! 安全警告：正在绑定到 {host} !!")
+        print("  这会把 agentchattr 暴露给局域网。")
         print()
-        print("  Risks:")
-        print("  - No TLS: traffic (including session token) is plaintext")
-        print("  - Anyone on your network can sniff the token and gain full access")
-        print("  - With the token, anyone can @mention agents and trigger tool execution")
-        print("  - If agents run with auto-approve, this means remote code execution")
+        print("  风险：")
+        print("  - 没有 TLS：流量（包括会话令牌）以明文传输")
+        print("  - 同一网络中的任何人都能嗅探令牌并获得完全访问权限")
+        print("  - 拿到令牌的人可以 @智能体 并触发工具执行")
+        print("  - 如果智能体开启了自动批准，这等于远程代码执行")
         print()
-        print("  Only use this on a trusted home network. Never on public/shared WiFi.")
+        print("  只在可信的家庭网络中使用，切勿在公共/共享 WiFi 上使用。")
         if "--allow-network" not in sys.argv:
-            print("  Pass --allow-network to start anyway, or set host to 127.0.0.1.\n")
+            print("  如仍要启动请加 --allow-network，或把 host 改为 127.0.0.1。\n")
             sys.exit(1)
         else:
             print()
@@ -148,16 +148,16 @@ def main():
             except (EOFError, KeyboardInterrupt):
                 confirm = ""
             if confirm != "YES":
-                print("  Aborted.\n")
+                print("  已取消。\n")
                 sys.exit(1)
 
     print(f"\n  agentchattr")
-    print(f"  Web UI:  http://{host}:{port}")
+    print(f"  网页界面:  http://{host}:{port}")
     print(f"  MCP HTTP: http://{host}:{http_port}/mcp  (Claude, Codex)")
     print(f"  MCP SSE:  http://{host}:{sse_port}/sse   (Gemini)")
-    print(f"  Data:    {data_dir}")
-    print(f"  Agents auto-trigger on @mention")
-    print(f"\n  Session token: {session_token}\n")
+    print(f"  数据目录:  {data_dir}")
+    print(f"  @提及智能体时会自动触发")
+    print(f"\n  会话令牌：{session_token}\n")
 
     uvicorn.run(app, host=host, port=port, log_level="info")
 

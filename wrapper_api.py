@@ -51,11 +51,11 @@ def main():
     api_agents = [n for n in agent_names if config["agents"][n].get("type") == "api"]
 
     if not api_agents:
-        print("  No API agents found in config.\n")
-        print("  To add one, copy the example config:")
+        print("  配置中没有 API 智能体。\n")
+        print("  要添加一个，先复制示例配置：")
         print("    cp config.local.toml.example config.local.toml")
-        print("  Then uncomment and edit an [agents.NAME] section (set type = \"api\").")
-        print("  Finally: python wrapper_api.py <name>")
+        print("  然后取消注释并编辑一个 [agents.NAME] 段（设置 type = \"api\"）。")
+        print("  最后运行：python wrapper_api.py <name>")
         sys.exit(1)
 
     parser = argparse.ArgumentParser(description="API agent wrapper for OpenAI-compatible endpoints")
@@ -80,7 +80,7 @@ def main():
     # Model API config
     base_url = agent_cfg.get("base_url", "").rstrip("/")
     if not base_url:
-        print(f"  Error: [agents.{agent}] must have base_url (e.g. http://localhost:8189/v1)")
+        print(f"  错误：[agents.{agent}] 必须设置 base_url (e.g. http://localhost:8189/v1)")
         sys.exit(1)
     model = agent_cfg.get("model", "")
     api_key_env = agent_cfg.get("api_key_env", "")
@@ -103,13 +103,13 @@ def main():
     try:
         registration = _register_instance(server_port, agent, args.label)
     except Exception as exc:
-        print(f"  Registration failed ({exc}).")
-        print("  Is the server running? Start it with: python run.py")
+        print(f"  注册失败（{exc}）。")
+        print("  服务器在运行吗？用 python run.py 启动")
         sys.exit(1)
 
     name = registration["name"]
     token = registration["token"]
-    print(f"  Registered as: {name} (slot {registration.get('slot', '?')})")
+    print(f"  已注册为：{name} (slot {registration.get('slot', '?')})")
 
     # Thread-safe identity state (can change via heartbeat rename)
     _lock = threading.Lock()
@@ -155,13 +155,13 @@ def main():
                 server_name = resp_data.get("name", n)
                 if server_name != n:
                     set_identity(new_name=server_name)
-                    print(f"  Identity updated: {n} -> {server_name}")
+                    print(f"  身份已更新：{n} -> {server_name}")
             except urllib.error.HTTPError as exc:
                 if exc.code == 409:
                     try:
                         replacement = _register_instance(server_port, agent, args.label)
                         set_identity(replacement["name"], replacement["token"])
-                        print(f"  Re-registered as: {replacement['name']}")
+                        print(f"  已重新注册为：{replacement['name']}")
                     except Exception:
                         pass
             except Exception:
@@ -299,7 +299,7 @@ def main():
             send_message(response, channel=channel)
             print(f"  [{channel}] Responded ({len(response)} chars)")
         except Exception as exc:
-            print(f"  Error handling trigger: {exc}")
+            print(f"  处理触发时出错：{exc}")
         finally:
             set_working(False)
 
@@ -309,11 +309,11 @@ def main():
         queue_file.write_text("", "utf-8")
 
     print(f"\n  === {agent_cfg.get('label', agent)} API Wrapper ===")
-    print(f"  Model endpoint: {base_url}/chat/completions")
+    print(f"  模型端点：{base_url}/chat/completions")
     if model:
-        print(f"  Model: {model}")
-    print(f"  @{name} mentions trigger model calls")
-    print(f"  Ctrl+C to stop\n")
+        print(f"  模型：{model}")
+    print(f"  @{name} 被提及时会调用模型")
+    print(f"  按 Ctrl+C 停止\n")
 
     try:
         while True:
@@ -346,7 +346,7 @@ def main():
 
             time.sleep(1)
     except KeyboardInterrupt:
-        print("\n  Shutting down...")
+        print("\n  正在关闭...")
     finally:
         try:
             n = get_name()
@@ -358,11 +358,11 @@ def main():
                 headers=_auth_headers(t),
             )
             urllib.request.urlopen(req, timeout=5)
-            print(f"  Deregistered {n}")
+            print(f"  已注销 {n}")
         except Exception:
             pass
 
-    print("  Wrapper stopped.")
+    print("  包装器已停止。")
 
 
 if __name__ == "__main__":

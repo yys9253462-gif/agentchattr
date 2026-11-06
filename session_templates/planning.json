@@ -1,26 +1,26 @@
 {
   "id": "planning",
-  "name": "Planning",
-  "description": "Turn a problem into an execution plan through framing, challenge, and synthesis.",
+  "name": "规划",
+  "description": "通过界定、质疑和汇总，把问题变成可执行的计划。",
   "roles": ["planner", "challenger", "synthesiser"],
   "user_required": false,
   "phases": [
     {
-      "name": "Frame",
+      "name": "界定问题",
       "participants": ["planner"],
-      "prompt": "State the goal, constraints, context, and success criteria.",
+      "prompt": "说明目标、约束、背景和成功标准。",
       "turn_order": "sequential"
     },
     {
-      "name": "Challenge",
+      "name": "质疑",
       "participants": ["challenger"],
-      "prompt": "Test the plan. Find gaps, raise risks, question assumptions. Provide your own independent analysis.",
+      "prompt": "检验计划：找漏洞、提风险、质疑假设。给出你自己的独立分析。",
       "turn_order": "sequential"
     },
     {
-      "name": "Plan",
+      "name": "计划",
       "participants": ["synthesiser"],
-      "prompt": "Write the final plan: ordered actions, decisions made, risks acknowledged, and open questions.",
+      "prompt": "写出最终计划：有序的行动步骤、已做的决定、已知风险和待定问题。",
       "turn_order": "sequential",
       "is_output": true
     }

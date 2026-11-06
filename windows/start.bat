@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr — starts the server only
 cd /d "%~dp0.."
 
@@ -11,5 +12,5 @@ call .venv\Scripts\activate.bat
 
 python run.py
 echo.
-echo === Server exited with code %ERRORLEVEL% ===
+echo === 服务器已退出，退出码 %ERRORLEVEL% ===
 pause

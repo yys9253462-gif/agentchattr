@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr — starts server (if not running) + API agent wrapper
 REM Usage: start_api_agent.bat <agent_name>
 REM Example: start_api_agent.bat qwen
@@ -7,15 +8,15 @@ cd /d "%~dp0.."
 set AGENT_NAME=%~1
 if "%AGENT_NAME%"=="" (
     echo.
-    echo   agentchattr — API Agent Launcher
+    echo   agentchattr — API 智能体启动器
     echo   ---------------------------------
-    echo   Enter the agent name from your config.local.toml
-    echo   Example: qwen, mistral, llama, deepseek
+    echo   请输入 config.local.toml 中的智能体名称
+    echo   示例：qwen, mistral, llama, deepseek
     echo.
     set /p AGENT_NAME="  Agent name: "
 )
 if "%AGENT_NAME%"=="" (
-    echo   Error: No agent name provided.
+    echo   错误：未提供智能体名称。
     pause
     exit /b 1
 )

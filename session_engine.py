@@ -66,7 +66,7 @@ class SessionEngine:
         phase = phases[phase_idx]
         self._messages.add(
             sender="system",
-            text=f"Phase: {phase['name']}",
+            text=f"阶段：{phase['name']}",
             msg_type="session_phase",
             channel=session.get("channel", "general"),
             metadata={
@@ -242,7 +242,7 @@ class SessionEngine:
                     next_phase_obj = phases[next_phase]
                     self._messages.add(
                         sender="system",
-                        text=f"Phase: {next_phase_obj['name']}",
+                        text=f"阶段：{next_phase_obj['name']}",
                         msg_type="session_phase",
                         channel=session.get("channel", "general"),
                         metadata={"session_id": session["id"],

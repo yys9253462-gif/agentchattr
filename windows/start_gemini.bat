@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr — starts server (if not running) + Gemini wrapper
 cd /d "%~dp0.."
 
@@ -13,8 +14,8 @@ REM Pre-flight: check that gemini CLI is installed
 where gemini >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
-    echo   Error: "gemini" was not found on PATH.
-    echo   Install it first, then try again.
+    echo   错误：PATH 中找不到 "gemini"。
+    echo   请先安装，再重试。
     echo.
     pause
     exit /b 1
@@ -24,10 +25,10 @@ REM Warn if ripgrep is missing (Gemini CLI can hang on init - upstream bug)
 where rg >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
-    echo   Warning: ripgrep (rg) not found on PATH.
-    echo   Gemini CLI can hang on "Initializing..." for several minutes.
-    echo   Fix: choco install ripgrep  or  winget install BurntSushi.ripgrep
-    echo   See: https://github.com/google-gemini/gemini-cli/issues/13986
+    echo   警告：PATH 中找不到 ripgrep (rg)。
+    echo   Gemini CLI 可能会卡在 "Initializing..." 长达数分钟。
+    echo   解决：choco install ripgrep   或   winget install BurntSushi.ripgrep
+    echo   参见：https://github.com/google-gemini/gemini-cli/issues/13986
     echo.
 )
 
@@ -46,6 +47,6 @@ if %errorlevel% neq 0 (
 python wrapper.py gemini
 if %errorlevel% neq 0 (
     echo.
-    echo   Agent exited unexpectedly. Check the output above.
+    echo   智能体意外退出，请查看上方输出。
     pause
 )

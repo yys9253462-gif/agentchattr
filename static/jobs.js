@@ -54,9 +54,9 @@ window._messageRenderers['job_created'] = function (el, msg) {
         el.dataset.hiddenReason = 'no-job-data';
     }
     if (actId) {
-        el.innerHTML = `<span class="job-breadcrumb-link" onclick="openJobFromBreadcrumb(${actId})" title="Open job">
+        el.innerHTML = `<span class="job-breadcrumb-link" onclick="openJobFromBreadcrumb(${actId})" title="打开任务">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="2" y="1" width="5" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="8" width="5" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
-            New job: <em>${window.escapeHtml(msg.text.replace('Job created: ', ''))}</em></span>`;
+            新任务：<em>${window.escapeHtml(msg.text.replace('Job created: ', ''))}</em></span>`;
     } else {
         el.innerHTML = `<span class="msg-text">${window.escapeHtml(msg.text)}</span>`;
     }
@@ -117,7 +117,7 @@ function _collapseJobBreadcrumbs(container, newEl) {
     group.className = 'job-group';
     const summary = document.createElement('div');
     summary.className = 'job-group-summary';
-    summary.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="2" y="1" width="5" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="8" width="5" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>${crumbs.length} jobs were started`;
+    summary.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" style="vertical-align:-2px;margin-right:4px;opacity:0.6"><rect x="2" y="1" width="5" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="8" width="5" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>已创建 ${crumbs.length} 个任务`;
     summary.onclick = () => {
         group.classList.toggle('expanded');
     };
@@ -147,7 +147,7 @@ function _repairJobGroup(group) {
         // Update the count text
         const summary = group.querySelector('.job-group-summary');
         if (summary) {
-            summary.innerHTML = summary.innerHTML.replace(/\d+ jobs were started/, `${remaining.length} jobs were started`);
+            summary.innerHTML = summary.innerHTML.replace(/已创建 \d+ 个任务/, `已创建 ${remaining.length} 个任务`);
         }
     }
 }
@@ -321,10 +321,10 @@ function updateJobReplyTargetUI() {
     if (selected) {
         dot.style.background = selected.color || 'var(--accent)';
         nameEl.textContent = selected.label || selected.name;
-        btn.title = `Reply target: ${selected.label || selected.name} (Tab to cycle)`;
+        btn.title = `回复对象：${selected.label || selected.name}（按 Tab 切换）`;
     } else {
-        nameEl.textContent = 'none';
-        btn.title = 'Reply target: none (Tab to choose)';
+        nameEl.textContent = '无';
+        btn.title = '回复对象：无（按 Tab 选择）';
     }
     btn.classList.toggle('no-target', !selected);
     clearBtn.classList.toggle('hidden', !selected);
@@ -587,9 +587,9 @@ function renderJobsList() {
 
     // Group by status: open first, then done, then archived
     const groups = [
-        { key: 'open', label: 'TO DO', items: [] },
-        { key: 'done', label: 'ACTIVE', items: [] },
-        { key: 'archived', label: 'CLOSED', items: [] },
+        { key: 'open', label: '待办', items: [] },
+        { key: 'done', label: '进行中', items: [] },
+        { key: 'archived', label: '已关闭', items: [] },
     ];
     for (const a of channelJobs) {
         const g = groups.find(g => g.key === a.status);
@@ -601,8 +601,8 @@ function renderJobsList() {
         const ghost = document.createElement('div');
         ghost.className = 'sb-ghost-card';
         ghost.innerHTML = `
-            <div class="sb-ghost-title">Create your first job</div>
-            <div class="sb-ghost-meta">Track work items with threaded conversations. Use @mentions to loop in agents.</div>
+            <div class="sb-ghost-title">创建你的第一个任务</div>
+            <div class="sb-ghost-meta">用线程式对话跟踪工作项，用 @提及 拉 agent 加入。</div>
         `;
         ghost.onclick = () => {
             const btn = document.querySelector('.jobs-create-btn');
@@ -686,7 +686,7 @@ function renderJobsList() {
             const unread = jobUnread[a.id] || 0;
 
             const unreadHtml = unread > 0
-                ? `<span class="job-unread-dot" title="Unread messages">${unread > 99 ? '99+' : unread}</span>`
+                ? `<span class="job-unread-dot" title="未读消息">${unread > 99 ? '99+' : unread}</span>`
                 : '';
 
             card.innerHTML = `
@@ -733,7 +733,7 @@ function renderJobsList() {
                     if (trash) {
                         trash.classList.add('drop-ready');
                         const hint = trash.querySelector('.archive-trash-hint');
-                        if (hint) hint.textContent = ids.length > 1 ? `Drop to delete ${ids.length} jobs` : 'Drop to delete job';
+                        if (hint) hint.textContent = ids.length > 1 ? `松开即删除 ${ids.length} 个任务` : '松开即删除任务';
                     }
                 } else {
                     itemsContainer.classList.add('job-reorder-active');
@@ -829,7 +829,7 @@ function renderJobsList() {
         if (group.key === 'archived' && group.items.length > 0) {
             const trashZone = document.createElement('div');
             trashZone.className = 'archive-trash-zone visible';
-            trashZone.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M6 4V3h4v1M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="archive-trash-hint">Drag here to delete</span>`;
+            trashZone.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M6 4V3h4v1M5 4v8.5h6V4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="archive-trash-hint">拖到这里删除</span>`;
 
             // Click to delete selected items
             trashZone.addEventListener('click', async () => {
@@ -923,14 +923,14 @@ async function openJobConversation(jobId) {
     const jobInput = document.getElementById('jobs-conv-input-text');
     const msgCount = (job.messages || []).filter(m => !m?.deleted).length;
     if (msgCount === 0 && target) {
-        const starterText = `@${target} start this job`;
+        const starterText = `@${target} 开始执行这个任务`;
         jobInput.value = starterText;
-        jobInput.placeholder = 'Send to assign · click to edit';
+        jobInput.placeholder = '发送即指派 · 点击可编辑';
         jobInput.classList.add('job-starter-prefill');
         const clearStarter = () => {
             if (jobInput.classList.contains('job-starter-prefill')) {
                 jobInput.value = '';
-                jobInput.placeholder = 'Message...';
+                jobInput.placeholder = '输入消息...';
                 jobInput.classList.remove('job-starter-prefill');
             }
             jobInput.removeEventListener('focus', clearStarter);
@@ -939,7 +939,7 @@ async function openJobConversation(jobId) {
         jobInput.addEventListener('focus', clearStarter);
         jobInput.addEventListener('click', clearStarter);
     } else {
-        jobInput.placeholder = 'Message...';
+        jobInput.placeholder = '输入消息...';
         jobInput.classList.remove('job-starter-prefill');
         jobInput.focus();
     }
@@ -962,7 +962,7 @@ async function loadJobMessages(jobId) {
             const convView = document.getElementById('jobs-conversation-view');
             const hasBrief = !!convView.querySelector('.job-brief-card');
             if (!hasBrief) {
-                container.innerHTML = '<div class="jobs-empty" style="font-size:12px; padding:16px">No messages yet. Start the conversation!</div>';
+                container.innerHTML = '<div class="jobs-empty" style="font-size:12px; padding:16px">还没有消息，开始对话吧！</div>';
             }
             return msgs;
         }
@@ -975,7 +975,7 @@ async function loadJobMessages(jobId) {
         container.scrollTop = container.scrollHeight;
         return msgs;
     } catch (e) {
-        container.innerHTML = '<div class="jobs-empty">Failed to load messages.</div>';
+        container.innerHTML = '<div class="jobs-empty">消息加载失败。</div>';
         return [];
     }
 }
@@ -1017,7 +1017,7 @@ function _animateRemoveJobMessage(msgEl) {
 function _renderJobMsgDeleteDefault(actions, jobId, msgId) {
     if (!actions) return;
     actions.classList.remove('confirming');
-    actions.innerHTML = `<button class="job-msg-del-btn" onclick="startDeleteJobMessage(${jobId}, ${msgId})">DEL</button>`;
+    actions.innerHTML = `<button class="job-msg-del-btn" onclick="startDeleteJobMessage(${jobId}, ${msgId})">删除</button>`;
 }
 
 function startDeleteJobMessage(jobId, msgId, event) {
@@ -1039,9 +1039,9 @@ function startDeleteJobMessage(jobId, msgId, event) {
 
     actions.classList.add('confirming');
     actions.innerHTML = `
-        <span class="job-msg-delete-label">Delete?</span>
-        <button class="job-msg-confirm-yes" onclick="confirmDeleteJobMessage(${jobId}, ${msgId})">Yes</button>
-        <button class="job-msg-confirm-no" onclick="cancelDeleteJobMessage(${jobId}, ${msgId})">No</button>
+        <span class="job-msg-delete-label">删除？</span>
+        <button class="job-msg-confirm-yes" onclick="confirmDeleteJobMessage(${jobId}, ${msgId})">是</button>
+        <button class="job-msg-confirm-no" onclick="cancelDeleteJobMessage(${jobId}, ${msgId})">否</button>
     `;
     _clearJobMsgDeleteTimer(jobId, msgId);
     const key = `${jobId}:${msgId}`;
@@ -1095,14 +1095,14 @@ function appendJobMessage(msg) {
     const msgId = Number(msg.id);
     const canDelete = Number.isFinite(msgId);
     const deleteActionHtml = canDelete
-        ? `<div class="job-msg-actions"><button class="job-msg-del-btn" onclick="startDeleteJobMessage(${activeJobId}, ${msgId})">DEL</button></div>`
+        ? `<div class="job-msg-actions"><button class="job-msg-del-btn" onclick="startDeleteJobMessage(${activeJobId}, ${msgId})">删除</button></div>`
         : '';
 
     if (msg.type === 'suggestion') {
         const resolved = msg.resolved;
         div.innerHTML = `
             <div class="job-msg-header">
-                <span class="suggestion-pill">Suggestion</span>
+                <span class="suggestion-pill">建议</span>
                 <span class="job-msg-sender" style="color: ${senderColor}">${window.escapeHtml(msg.sender)}</span>
                 <span class="job-msg-time">${msg.time || ''}</span>
                 ${deleteActionHtml}
@@ -1110,7 +1110,7 @@ function appendJobMessage(msg) {
             <div class="job-msg-text">${window.renderMarkdown(msg.text)}</div>
             <div class="suggestion-actions">${resolved
                 ? `<span class="suggestion-resolved">${window.escapeHtml(resolved)}</span>`
-                : `<button class="suggestion-accept" onclick="acceptSuggestion(${activeJobId}, ${msg.id})">Accept</button><button class="suggestion-dismiss" onclick="dismissSuggestion(${activeJobId}, ${msg.id})">Dismiss</button>`
+                : `<button class="suggestion-accept" onclick="acceptSuggestion(${activeJobId}, ${msg.id})">接受</button><button class="suggestion-dismiss" onclick="dismissSuggestion(${activeJobId}, ${msg.id})">忽略</button>`
             }</div>
         `;
     } else {
@@ -1179,14 +1179,14 @@ async function sendJobMessage() {
 
 async function uploadJobImage(file, jobId = activeJobId) {
     if (!activeJobId) return;
-    if (jobId !== activeJobId) return `${file.name}: job changed. Please attach the file again.`;
+    if (jobId !== activeJobId) return `${file.name}：任务已切换，请重新添加附件。`;
     const status = document.getElementById('job-attachment-status');
     jobUploads++;
     document.getElementById('job-send').disabled = true;
-    status.textContent = `Uploading ${file.name}…`;
+    status.textContent = `正在上传 ${file.name}…`;
     try {
         const data = await uploadAttachment(file);
-        if (jobId !== activeJobId) throw new Error('Job changed. Please attach the file again.');
+        if (jobId !== activeJobId) throw new Error('任务已切换，请重新添加附件。');
         jobPendingAttachments.push(data);
         renderJobAttachments();
         status.textContent = '';
@@ -1263,7 +1263,7 @@ async function toggleJobStatus(status) {
     const job = jobsData.find(a => a.id === activeJobId);
     if (!job) return;
     const oldStatus = job.status;
-    const statusLabels = { 'open': 'TO DO', 'done': 'ACTIVE', 'archived': 'CLOSED' };
+    const statusLabels = { 'open': '待办', 'done': '进行中', 'archived': '已关闭' };
 
     try {
         await fetch(`/api/jobs/${activeJobId}`, {
@@ -1305,11 +1305,11 @@ function showCreateJob() {
     const form = document.createElement('div');
     form.className = 'job-create-form';
     form.innerHTML = `
-        <input type="text" placeholder="Job title" class="job-create-title" maxlength="120" autofocus>
-        <textarea placeholder="Description (optional)" class="job-create-body" maxlength="1000" rows="2"></textarea>
+        <input type="text" placeholder="任务标题" class="job-create-title" maxlength="120" autofocus>
+        <textarea placeholder="描述（可选）" class="job-create-body" maxlength="1000" rows="2"></textarea>
         <div class="job-create-actions">
-            <button class="cancel-btn" onclick="this.closest('.job-create-form').remove()">Cancel</button>
-            <button class="create-btn" onclick="submitCreateJob(this)">Create</button>
+            <button class="cancel-btn" onclick="this.closest('.job-create-form').remove()">取消</button>
+            <button class="create-btn" onclick="submitCreateJob(this)">创建</button>
         </div>
     `;
     list.prepend(form);
@@ -1509,14 +1509,14 @@ function showConvertToJobModal(msgId) {
         modal.className = 'convert-job-modal hidden';
         modal.innerHTML = `
             <div class="convert-job-dialog">
-                <h3 class="convert-job-title">Convert to Job</h3>
-                <p class="convert-job-subtitle">An agent will write a job proposal for you to accept</p>
+                <h3 class="convert-job-title">转为任务</h3>
+                <p class="convert-job-subtitle">agent 会写一份任务提案，供你确认接受</p>
                 <div class="convert-job-preview"></div>
-                <label class="convert-job-label">Ask agent to write proposal</label>
+                <label class="convert-job-label">让 agent 撰写提案</label>
                 <select class="convert-job-agent"></select>
                 <div class="convert-job-actions">
-                    <button class="convert-job-cancel">Cancel</button>
-                    <button class="convert-job-confirm">Convert</button>
+                    <button class="convert-job-cancel">取消</button>
+                    <button class="convert-job-confirm">转换</button>
                 </div>
             </div>`;
         modal.addEventListener('click', (e) => {
@@ -1577,7 +1577,7 @@ async function _doConvertToJob() {
         id: Date.now(),
         sender: 'system',
         type: 'system',
-        text: `Asking @${agent} to create a job card\u2026`,
+        text: `正在请 @${agent} 创建任务卡片\u2026`,
         channel: window.activeChannel,
         time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
     };
@@ -1618,12 +1618,12 @@ function showDeleteJobModal(jobId) {
         modal.className = 'convert-job-modal hidden';
         modal.innerHTML = `
             <div class="convert-job-dialog delete-job-dialog">
-                <h3 class="convert-job-title">Delete Job Permanently?</h3>
-                <p class="convert-job-subtitle">This removes the job and its messages permanently. This cannot be undone.</p>
+                <h3 class="convert-job-title">永久删除任务？</h3>
+                <p class="convert-job-subtitle">将永久删除该任务及其全部消息，且无法撤销。</p>
                 <div class="delete-job-target"></div>
                 <div class="convert-job-actions">
-                    <button class="convert-job-cancel">Cancel</button>
-                    <button class="delete-job-confirm">Delete</button>
+                    <button class="convert-job-cancel">取消</button>
+                    <button class="delete-job-confirm">删除</button>
                 </div>
             </div>`;
         modal.addEventListener('click', (e) => {
@@ -1636,7 +1636,7 @@ function showDeleteJobModal(jobId) {
     const job = jobsData.find(a => a.id === jobId);
     const target = modal.querySelector('.delete-job-target');
     if (target) {
-        const title = job?.title || `Job #${jobId}`;
+        const title = job?.title || `任务 #${jobId}`;
         target.textContent = title;
     }
 
@@ -1695,7 +1695,7 @@ async function acceptProposal(msgId) {
             if (card) {
                 card.classList.add('proposal-resolved');
                 const actions = card.querySelector('.proposal-actions');
-                if (actions) actions.innerHTML = '<div class="proposal-status-resolved">Accepted</div>';
+                if (actions) actions.innerHTML = '<div class="proposal-status-resolved">已接受</div>';
             }
             // Open the job (don't push to jobsData — WS 'create' event handles that)
             const panel = document.getElementById('jobs-panel');
@@ -1916,10 +1916,10 @@ function updateArchiveTrashHint(container) {
     const hint = trash.querySelector('.archive-trash-hint');
     if (count > 0) {
         trash.classList.add('has-selection');
-        hint.textContent = `Delete ${count} selected`;
+        hint.textContent = `删除选中的 ${count} 个`;
     } else {
         trash.classList.remove('has-selection');
-        hint.textContent = 'Drag here to delete';
+        hint.textContent = '拖到这里删除';
     }
 }
 

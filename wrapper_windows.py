@@ -431,8 +431,8 @@ def run_agent(command, extra_args, cwd, env, queue_file, agent, no_restart, star
             if no_restart:
                 break
 
-            print(f"\n  {agent.capitalize()} exited (code {proc.returncode}).")
-            print(f"  Restarting in 3s... (Ctrl+C to quit)")
+            print(f"\n  {agent.capitalize()} 已退出（退出码 {proc.returncode}）。")
+            print(f"  3 秒后重启...（Ctrl+C 退出）")
             time.sleep(3)
         except KeyboardInterrupt:
             break

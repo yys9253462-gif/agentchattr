@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +15,7 @@
             <div class="header-left">
                 <img src="/static/logo.png" alt="agentchattr" class="header-logo">
                 <h1 id="room-title">agentchattr</h1>
-                <a class="discord-pill" href="https://discord.gg/qzfn5YTT9a" target="_blank" rel="noopener" title="Join the Discord">
+                <a class="discord-pill" href="https://discord.gg/qzfn5YTT9a" target="_blank" rel="noopener" title="加入 Discord">
                     <svg width="14" height="14" viewBox="0 0 71 55" fill="currentColor"><path d="M60.1 4.9A58.5 58.5 0 0045.4.2a.2.2 0 00-.2.1 40.8 40.8 0 00-1.8 3.7 54 54 0 00-16.2 0A37.4 37.4 0 0025.4.3a.2.2 0 00-.2-.1A58.4 58.4 0 0010.5 4.9a.2.2 0 00-.1.1C1.5 18.7-.9 32.2.3 45.5v.2a58.9 58.9 0 0017.7 9a.2.2 0 00.3-.1 42.1 42.1 0 003.6-5.9.2.2 0 00-.1-.3 38.8 38.8 0 01-5.5-2.6.2.2 0 01 0-.4l1.1-.9a.2.2 0 01.2 0 42 42 0 0035.6 0 .2.2 0 01.2 0l1.1.9a.2.2 0 010 .4 36.4 36.4 0 01-5.5 2.6.2.2 0 00-.1.3 47.2 47.2 0 003.6 5.9.2.2 0 00.3.1A58.7 58.7 0 0070.4 45.7v-.2C72 30.1 68 16.7 60.2 5a.2.2 0 00-.1-.1zM23.7 37.3c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2 6.5 3.2 6.4 7.2c0 4-2.8 7.2-6.4 7.2zm23.6 0c-3.5 0-6.4-3.2-6.4-7.2s2.8-7.2 6.4-7.2 6.5 3.2 6.4 7.2c0 4-2.9 7.2-6.4 7.2z"/></svg>
                     Discord
                 </a>
@@ -23,33 +23,33 @@
             </div>
             <div class="header-right">
                 <div id="agent-status"></div>
-                <button class="settings-btn" id="jobs-toggle" onclick="toggleJobsPanel()" title="Jobs">
+                <button class="settings-btn" id="jobs-toggle" onclick="toggleJobsPanel()" title="任务">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <rect x="3" y="2" width="10" height="12" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
                         <path d="M6 5h4M6 8h4M6 11h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                     </svg>
                     <span class="jobs-badge hidden" id="jobs-badge">0</span>
                 </button>
-                <button class="settings-btn" id="rules-toggle" onclick="toggleRulesPanel()" title="Rules">
+                <button class="settings-btn" id="rules-toggle" onclick="toggleRulesPanel()" title="规则">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/>
                         <path d="M5 8L7 10L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                     <span class="rules-badge hidden" id="rules-badge">0</span>
                 </button>
-                <button class="settings-btn" id="pins-toggle" onclick="togglePinsPanel()" title="Pinned messages">
+                <button class="settings-btn" id="pins-toggle" onclick="togglePinsPanel()" title="置顶消息">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path d="M6 2.5h4l.5 4.5H9.5L8 14L6.5 7H5.5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
                         <line x1="4.5" y1="7" x2="11.5" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
                     </svg>
                 </button>
-                <button class="settings-btn" id="settings-toggle" onclick="toggleSettings()" title="Settings">
+                <button class="settings-btn" id="settings-toggle" onclick="toggleSettings()" title="设置">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path d="M6.5 1L7.1 3.1C7.4 3.2 7.7 3.4 8 3.6L10 2.8L11.5 5.4L9.8 6.7C9.8 7 9.8 7.3 9.8 7.6L11.5 8.9L10 11.5L8 10.7C7.7 10.9 7.4 11 7.1 11.2L6.5 13.3H3.5L2.9 11.2C2.6 11 2.3 10.9 2 10.7L0 11.5L-1.5 8.9L0.2 7.6C0.2 7.3 0.2 7 0.2 6.7L-1.5 5.4L0 2.8L2 3.6C2.3 3.4 2.6 3.2 2.9 3.1L3.5 1H6.5Z" transform="translate(3 1)" stroke="currentColor" stroke-width="1.2" fill="none"/>
                         <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
                     </svg>
                 </button>
-                <button class="settings-btn" id="help-btn" onclick="toggleHelp()" title="Help">
+                <button class="settings-btn" id="help-btn" onclick="toggleHelp()" title="帮助">
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.2"/>
                         <text x="8" y="11" text-anchor="middle" fill="currentColor" font-size="9" font-weight="700">?</text>
@@ -60,24 +60,24 @@
 
         <div id="settings-bar" class="hidden">
             <div class="settings-field">
-                <label for="setting-username">Name</label>
-                <input type="text" id="setting-username" placeholder="your name" maxlength="20">
+                <label for="setting-username">名字</label>
+                <input type="text" id="setting-username" placeholder="你的名字" maxlength="20">
             </div>
             <div class="settings-field">
-                <label for="setting-subtitle">This server</label>
-                <input type="text" id="setting-subtitle" placeholder="e.g. urbly" maxlength="40" title="Shown next to agentchattr, to tell this server apart from others">
+                <label for="setting-subtitle">本服务器</label>
+                <input type="text" id="setting-subtitle" placeholder="例如 urbly" maxlength="40" title="显示在 agentchattr 旁边，用于区分不同服务器">
             </div>
             <div class="settings-field">
-                <label for="setting-font">Font</label>
+                <label for="setting-font">字体</label>
                 <select id="setting-font">
-                    <option value="mono">Monospace</option>
-                    <option value="sans">Sans</option>
+                    <option value="mono">等宽</option>
+                    <option value="sans">无衬线</option>
                 </select>
             </div>
             <div class="settings-field">
-                <label for="setting-hops">Loop guard</label>
+                <label for="setting-hops">循环保护</label>
                 <div class="sched-num-wrap">
-                    <input type="number" id="setting-hops" class="sched-pop-num" min="1" max="50" value="4" title="Max agent-to-agent hops before pausing">
+                    <input type="number" id="setting-hops" class="sched-pop-num" min="1" max="50" value="4" title="agent 之间连续互相传递多少次后暂停">
                     <div class="sched-num-btns">
                         <button type="button" onclick="stepNumInput('setting-hops',1)" tabindex="-1">&#9650;</button>
                         <button type="button" onclick="stepNumInput('setting-hops',-1)" tabindex="-1">&#9660;</button>
@@ -85,9 +85,9 @@
                 </div>
             </div>
             <div class="settings-field">
-                <label for="setting-history">History</label>
+                <label for="setting-history">历史记录</label>
                 <select id="setting-history">
-                    <option value="all">All</option>
+                    <option value="all">全部</option>
                     <option value="25">25</option>
                     <option value="50">50</option>
                     <option value="100">100</option>
@@ -96,27 +96,27 @@
                 </select>
             </div>
             <div class="settings-field">
-                <label for="setting-contrast">Contrast</label>
+                <label for="setting-contrast">对比度</label>
                 <select id="setting-contrast">
-                    <option value="normal">Normal</option>
-                    <option value="high">High</option>
+                    <option value="normal">普通</option>
+                    <option value="high">高</option>
                 </select>
             </div>
             <div class="settings-field">
-                <label for="setting-channel-sidebar">Channels</label>
-                <select id="setting-channel-sidebar" title="Show channels in a sidebar (Discord/Slack-style) instead of a top bar">
-                    <option value="top">Top bar</option>
-                    <option value="sidebar">Sidebar</option>
+                <label for="setting-channel-sidebar">频道</label>
+                <select id="setting-channel-sidebar" title="在侧边栏（类似 Discord/Slack）而不是顶栏显示频道">
+                    <option value="top">顶栏</option>
+                    <option value="sidebar">侧边栏</option>
                 </select>
             </div>
             <div class="settings-field">
-                <label for="setting-rules-refresh">Rule refresh</label>
-                <select id="setting-rules-refresh" title="How often to re-send active rules to agents">
-                    <option value="0">On rule changes</option>
-                    <option value="5">Every 5 triggers</option>
-                    <option value="10" selected>Every 10 triggers</option>
-                    <option value="20">Every 20 triggers</option>
-                    <option value="50">Every 50 triggers</option>
+                <label for="setting-rules-refresh">规则重发</label>
+                <select id="setting-rules-refresh" title="多久向 agent 重新发送一次生效中的规则">
+                    <option value="0">规则变更时</option>
+                    <option value="5">每 5 次触发</option>
+                    <option value="10" selected>每 10 次触发</option>
+                    <option value="20">每 20 次触发</option>
+                    <option value="50">每 50 次触发</option>
                 </select>
             </div>
             <div class="settings-divider"></div>
@@ -125,10 +125,10 @@
             </div>
             <div class="settings-divider"></div>
             <div class="settings-field">
-                <label>Project History</label>
+                <label>项目历史</label>
                 <div class="settings-history-btns">
-                    <button class="settings-btn" onclick="exportHistory()">Export History</button>
-                    <button class="settings-btn" id="import-history-btn" onclick="document.getElementById('import-file').click()">Import History</button>
+                    <button class="settings-btn" onclick="exportHistory()">导出历史</button>
+                    <button class="settings-btn" id="import-history-btn" onclick="document.getElementById('import-file').click()">导入历史</button>
                     <input type="file" id="import-file" accept=".zip" style="display:none" onchange="importHistory(this)">
                 </div>
             </div>
@@ -136,7 +136,7 @@
 
         <div id="pins-panel" class="hidden">
             <div class="pins-header">
-                <span>Pinned</span>
+                <span>置顶</span>
             </div>
             <div id="pins-list"></div>
         </div>
@@ -145,11 +145,11 @@
             <div class="channel-bar-left-spacer" aria-hidden="true"></div>
             <div class="channel-main">
                 <div id="channel-tabs"></div>
-                <button id="channel-add-btn" class="channel-add" onclick="showChannelCreateDialog()" title="Add channel">+</button>
+                <button id="channel-add-btn" class="channel-add" onclick="showChannelCreateDialog()" title="添加频道">+</button>
             </div>
             <div class="channel-bar-right">
                 <a id="update-pill" class="update-pill hidden" href="" target="_blank" rel="noopener"></a>
-                <a class="channel-support" href="https://buymeacoffee.com/bcurts" target="_blank" rel="noopener" title="Support development">&#9829;<span class="support-label"> Support development</span></a>
+                <a class="channel-support" href="https://buymeacoffee.com/bcurts" target="_blank" rel="noopener" title="支持开发">&#9829;<span class="support-label"> 支持开发</span></a>
             </div>
         </div>
 
@@ -160,8 +160,8 @@
                 <span class="session-waiting"></span>
             </div>
             <div id="session-end-controls" class="session-end-controls">
-                <button id="session-jump-btn" class="session-jump-btn hidden" onclick="jumpToSessionChannel()">Go to channel</button>
-                <button id="session-end-btn" class="session-end-btn" onclick="toggleEndSessionConfirm(event)">End Session</button>
+                <button id="session-jump-btn" class="session-jump-btn hidden" onclick="jumpToSessionChannel()">前往频道</button>
+                <button id="session-end-btn" class="session-end-btn" onclick="toggleEndSessionConfirm(event)">结束会话</button>
             </div>
         </div>
 
@@ -169,8 +169,8 @@
             <aside id="channel-sidebar" class="hidden">
                 <div id="channel-sidebar-top"></div>
                 <div class="channel-sidebar-header">
-                    <span>Channels</span>
-                    <button id="channel-sidebar-add" class="channel-sidebar-header-add" onclick="showChannelCreateDialog()" title="Add channel">+</button>
+                    <span>频道</span>
+                    <button id="channel-sidebar-add" class="channel-sidebar-header-add" onclick="showChannelCreateDialog()" title="添加频道">+</button>
                 </div>
                 <div id="channel-sidebar-list"></div>
                 <div class="channel-sidebar-grip" id="channel-sidebar-grip"></div>
@@ -179,7 +179,7 @@
                 <div id="day-float" aria-hidden="true"><span></span></div>
                 <div id="loading-indicator">
                     <div class="loading-spinner"></div>
-                    <span>Loading messages...</span>
+                    <span>正在加载消息…</span>
                 </div>
                 <div id="messages"></div>
                 <div id="typing-indicator" class="hidden">
@@ -190,19 +190,19 @@
                 <div class="jobs-grip" id="jobs-grip"></div>
                 <div id="jobs-list-view">
                     <div class="jobs-header">
-                        <span>Jobs</span>
-                        <button class="jobs-create-btn" onclick="showCreateJob()" title="Create Job">+</button>
+                        <span>任务</span>
+                        <button class="jobs-create-btn" onclick="showCreateJob()" title="新建任务">+</button>
                     </div>
                     <div id="jobs-list"></div>
                 </div>
                 <div id="jobs-conversation-view" class="hidden">
                     <div class="jobs-conv-header">
-                        <button class="jobs-back-btn" onclick="jobsBack()" title="Back">&larr;</button>
+                        <button class="jobs-back-btn" onclick="jobsBack()" title="返回">&larr;</button>
                         <span class="jobs-conv-title" id="jobs-conv-title"></span>
                         <div class="jobs-status-toggles" id="jobs-status-toggles">
-                            <button class="job-toggle open" data-status="open" onclick="toggleJobStatus('open')" title="To Do">TO DO</button>
-                            <button class="job-toggle done" data-status="done" onclick="toggleJobStatus('done')" title="Active">ACTIVE</button>
-                            <button class="job-toggle archived" data-status="archived" onclick="toggleJobStatus('archived')" title="Closed">CLOSED</button>
+                            <button class="job-toggle open" data-status="open" onclick="toggleJobStatus('open')" title="待办">待办</button>
+                            <button class="job-toggle done" data-status="done" onclick="toggleJobStatus('done')" title="进行中">进行中</button>
+                            <button class="job-toggle archived" data-status="archived" onclick="toggleJobStatus('archived')" title="已关闭">已关闭</button>
                         </div>
                     </div>
                     <div class="jobs-conv-messages" id="jobs-conv-messages"></div>
@@ -211,16 +211,16 @@
                         <div id="job-attachments" class="job-attachments"></div>
                         <div id="job-attachment-status" class="attachment-status" role="status"></div>
                         <div class="job-reply-target-row hidden" id="job-reply-target-row">
-                            <button class="job-reply-target-btn" id="job-reply-target-btn" type="button" onclick="cycleJobReplyTarget()" title="Reply target">
-                                <span class="job-reply-target-prefix">To</span>
+                            <button class="job-reply-target-btn" id="job-reply-target-btn" type="button" onclick="cycleJobReplyTarget()" title="回复对象">
+                                <span class="job-reply-target-prefix">发给</span>
                                 <span class="job-reply-target-dot" id="job-reply-target-dot"></span>
                                 <span class="job-reply-target-name" id="job-reply-target-name"></span>
                             </button>
-                            <button class="job-reply-target-clear hidden" id="job-reply-target-clear" type="button" onclick="clearJobReplyTarget(event)" title="Clear reply target" aria-label="Clear reply target">&times;</button>
+                            <button class="job-reply-target-clear hidden" id="job-reply-target-clear" type="button" onclick="clearJobReplyTarget(event)" title="清除回复对象" aria-label="清除回复对象">&times;</button>
                         </div>
                         <div class="job-input-row">
-                            <textarea id="jobs-conv-input-text" placeholder="Message..." rows="1"></textarea>
-                            <button id="job-send" onclick="sendJobMessage()">Send</button>
+                            <textarea id="jobs-conv-input-text" placeholder="输入消息…" rows="1"></textarea>
+                            <button id="job-send" onclick="sendJobMessage()">发送</button>
                         </div>
                     </div>
                 </div>
@@ -228,10 +228,10 @@
             <aside id="rules-panel" class="hidden">
                 <div class="rules-grip" id="rules-grip"></div>
                 <div class="rules-header">
-                    <span>Rules</span>
+                    <span>规则</span>
                     <span class="rules-counter" id="rules-counter"></span>
-                    <button class="rules-remind-btn" onclick="remindAgents()">Remind agents</button>
-                    <button class="jobs-create-btn" onclick="showCreateRule()" title="Add Rule">+</button>
+                    <button class="rules-remind-btn" onclick="remindAgents()">提醒 agent</button>
+                    <button class="jobs-create-btn" onclick="showCreateRule()" title="添加规则">+</button>
                 </div>
                 <div id="rules-list"></div>
             </aside>
@@ -248,13 +248,13 @@
                     </svg>
                     <span class="schedules-count" id="schedules-count"></span>
                     <span class="schedules-next" id="schedules-next"></span>
-                    <a class="schedules-see-all" onclick="toggleSchedulesExpand()">See all</a>
+                    <a class="schedules-see-all" onclick="toggleSchedulesExpand()">查看全部</a>
                 </div>
                 <div class="schedules-bar-list hidden" id="schedules-list"></div>
             </div>
             <div id="mention-toggles-row">
                 <div id="mention-toggles"></div>
-                <button id="clear-chat-btn" class="ghost-btn" onclick="clearChat()" title="Clear chat in this channel">Clear Chat</button>
+                <button id="clear-chat-btn" class="ghost-btn" onclick="clearChat()" title="清空本频道的聊天">清空聊天</button>
             </div>
             <div id="slash-menu" class="hidden"></div>
             <div id="mention-menu" class="hidden"></div>
@@ -262,16 +262,16 @@
             <div id="attachment-status" class="attachment-status" role="status"></div>
             <div id="input-row">
                 <span id="sender-label" class="sender-label">user</span>
-                <button id="session-launch-btn" onclick="showSessionLauncher()" title="Start a session">
+                <button id="session-launch-btn" onclick="showSessionLauncher()" title="开始会话">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polygon points="5 3 19 12 5 21 5 3"/>
                     </svg>
                 </button>
                 <textarea id="input"
-                    placeholder="Type a message... (use @name to mention agents)"
+                    placeholder="输入消息…（用 @名字 提及 agent）"
                     rows="1"
                     autofocus></textarea>
-                <button id="mic" type="button" onmousedown="event.preventDefault()" onclick="toggleVoice()" title="Voice typing (local speech-to-text)" aria-label="Voice typing" aria-pressed="false">
+                <button id="mic" type="button" onmousedown="event.preventDefault()" onclick="toggleVoice()" title="语音输入（本地语音转文字）" aria-label="语音输入" aria-pressed="false">
                     <svg id="mic-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
                         <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
@@ -280,8 +280,8 @@
                     </svg>
                 </button>
                 <div class="send-group">
-                    <button id="send" onclick="sendMessage()">Send</button>
-                    <button id="schedule-btn" class="send-clock" onclick="toggleSchedulePopover(event)" title="Schedule message">
+                    <button id="send" onclick="sendMessage()">发送</button>
+                    <button id="schedule-btn" class="send-clock" onclick="toggleSchedulePopover(event)" title="定时发送">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10"/>
                             <path d="M12 6v6.5l4 2"/>
@@ -290,16 +290,16 @@
                 </div>
                 <div id="schedule-popover" class="schedule-popover hidden">
                     <div class="sched-pop-header">
-                        <span>Schedule message</span>
+                        <span>定时发送</span>
                         <button class="sched-pop-close" onclick="closeSchedulePopover()">&times;</button>
                     </div>
                     <div class="sched-pop-body">
                         <div class="sched-pop-row">
-                            <label class="sched-pop-label">When</label>
+                            <label class="sched-pop-label">日期</label>
                             <select id="sched-date" class="sched-pop-select" onchange="updateSchedulePopoverState()"></select>
                         </div>
                         <div class="sched-pop-row sched-time-row">
-                            <label class="sched-pop-label">At</label>
+                            <label class="sched-pop-label">时间</label>
                             <select id="sched-hour" class="sched-pop-select sched-pop-select-sm" onchange="updateSchedulePopoverState()"></select>
                             <span class="sched-time-colon">:</span>
                             <select id="sched-minute" class="sched-pop-select sched-pop-select-sm" onchange="updateSchedulePopoverState()"></select>
@@ -308,11 +308,11 @@
                         <div class="sched-pop-row">
                             <label class="sched-pop-check">
                                 <input type="checkbox" id="sched-relative" onchange="toggleRelativeFields()">
-                                <span>In a while from now</span>
+                                <span>从现在起一段时间后</span>
                             </label>
                         </div>
                         <div class="sched-pop-row sched-relative-fields hidden" id="sched-relative-fields">
-                            <label class="sched-pop-label">In</label>
+                            <label class="sched-pop-label">之后</label>
                             <div class="sched-num-wrap">
                                 <input type="number" id="sched-rel-h" class="sched-pop-num" value="0" min="0" max="72" onchange="updateSchedulePopoverState()">
                                 <div class="sched-num-btns">
@@ -333,11 +333,11 @@
                         <div class="sched-pop-row">
                             <label class="sched-pop-check">
                                 <input type="checkbox" id="sched-recurring" onchange="toggleRecurringFields()">
-                                <span>Recurring</span>
+                                <span>重复</span>
                             </label>
                         </div>
                         <div class="sched-pop-row sched-recurring-fields hidden" id="sched-recurring-fields">
-                            <label class="sched-pop-label">Every</label>
+                            <label class="sched-pop-label">每隔</label>
                             <div class="sched-num-wrap">
                                 <input type="number" id="sched-interval-val" class="sched-pop-num" value="1" min="1" max="99">
                                 <div class="sched-num-btns">
@@ -346,27 +346,27 @@
                                 </div>
                             </div>
                             <select id="sched-interval-unit" class="sched-pop-select">
-                                <option value="minutes">minutes</option>
-                                <option value="hours" selected>hours</option>
-                                <option value="days">days</option>
+                                <option value="minutes">分钟</option>
+                                <option value="hours" selected>小时</option>
+                                <option value="days">天</option>
                             </select>
                         </div>
                     </div>
                     <div class="sched-pop-error hidden" id="sched-pop-error"></div>
                     <div class="sched-pop-footer">
-                        <button class="sched-pop-cancel" onclick="closeSchedulePopover()">Cancel</button>
-                        <button class="sched-pop-submit" onclick="submitSchedulePopover()">Schedule</button>
+                        <button class="sched-pop-cancel" onclick="closeSchedulePopover()">取消</button>
+                        <button class="sched-pop-submit" onclick="submitSchedulePopover()">定时</button>
                     </div>
                 </div>
             </div>
             <div class="input-hint">
-                Enter to send &middot; Shift+Enter for newline &middot; Paste or drop files &middot; Mic for voice &middot; Type / or @ for autocomplete
+                Enter 发送 &middot; Shift+Enter 换行 &middot; 可粘贴或拖入文件 &middot; 麦克风语音输入 &middot; 输入 / 或 @ 自动补全
             </div>
         </footer>
     </div>
 
     <div id="dropzone" class="hidden">
-        <div class="dropzone-inner">Drop files here</div>
+        <div class="dropzone-inner">把文件拖到这里</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>

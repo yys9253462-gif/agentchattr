@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM agentchattr - starts server (if not running) + CodeBuddy wrapper
 REM Usage: start_codebuddy.bat
 REM Requires the codebuddy CLI on PATH. First launch prompts interactive login.
@@ -15,8 +16,8 @@ REM Pre-flight: check that codebuddy CLI is installed
 where codebuddy >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
-    echo   Error: "codebuddy" was not found on PATH.
-    echo   Install it from https://www.codebuddy.ai/cli then try again.
+    echo   错误：PATH 中找不到 "codebuddy"。
+    echo   请从 https://www.codebuddy.ai/cli 安装后重试。
     echo.
     pause
     exit /b 1
@@ -37,6 +38,6 @@ if %errorlevel% neq 0 (
 python wrapper.py codebuddy
 if %errorlevel% neq 0 (
     echo.
-    echo   Agent exited unexpectedly. Check the output above.
+    echo   智能体意外退出，请查看上方输出。
     pause
 )

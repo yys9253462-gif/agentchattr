@@ -1,32 +1,32 @@
 {
   "id": "debate",
-  "name": "Debate",
-  "description": "Two agents argue opposing positions. A third moderates and delivers a verdict.",
+  "name": "辩论",
+  "description": "两个智能体分持正反立场辩论，第三个主持并给出裁决。",
   "roles": ["proposer", "for", "against", "moderator"],
   "user_required": false,
   "phases": [
     {
-      "name": "Frame",
+      "name": "界定问题",
       "participants": ["proposer"],
-      "prompt": "State the question or decision to debate. Provide context.",
+      "prompt": "说明要辩论的问题或决策，并提供背景。",
       "turn_order": "sequential"
     },
     {
-      "name": "Opening Arguments",
+      "name": "开篇立论",
       "participants": ["for", "against"],
-      "prompt": "Make your opening case. Be specific and evidence-based.",
+      "prompt": "陈述你的开篇论点。要具体，并给出依据。",
       "turn_order": "sequential"
     },
     {
-      "name": "Rebuttals",
+      "name": "反驳",
       "participants": ["against", "for"],
-      "prompt": "Respond directly to the opposing argument. Where are they wrong? Provide your own independent analysis.",
+      "prompt": "直接回应对方论点：他们错在哪里？给出你自己的独立分析。",
       "turn_order": "sequential"
     },
     {
-      "name": "Verdict",
+      "name": "裁决",
       "participants": ["moderator"],
-      "prompt": "Weigh both sides. Who made the stronger case? What is the recommended decision and why?",
+      "prompt": "权衡双方：谁的论证更有力？建议做出什么决定，为什么？",
       "turn_order": "sequential",
       "is_output": true
     }

@@ -361,8 +361,8 @@ def configure(cfg: dict, session_token: str = ""):
                     flag.unlink()
                     store.add(
                         "system",
-                        f"Agent routing for {agent_name} interrupted — auto-recovered. "
-                        "If agents aren't responding, try sending your message again."
+                        f"{agent_name} 的消息路由中断，已自动恢复。"
+                        "如果智能体没有回应，请重新发送一次消息。"
                     )
             except Exception:
                 pass
@@ -417,7 +417,7 @@ def configure(cfg: dict, session_token: str = ""):
                                         "new_name": renamed["new"],
                                     })
                                     asyncio.run_coroutine_threadsafe(_broadcast(rename_event), _event_loop)
-                            store.add(name, f"{name} disconnected (timeout)", msg_type="leave", channel=_agent_last_channel.get(name, _last_active_channel))
+                            store.add(name, f"{name} 已断开（超时）", msg_type="leave", channel=_agent_last_channel.get(name, _last_active_channel))
                             _posted_leave.add(name)
 
                 # Re-fetch registered names (may have changed from crash timeout above)
@@ -439,7 +439,7 @@ def configure(cfg: dict, session_token: str = ""):
                     # Post leave message ONCE per offline transition (debounced)
                     if name not in _posted_leave:
                         _posted_leave.add(name)
-                        store.add(name, f"{name} disconnected", msg_type="leave", channel=_agent_last_channel.get(name, _last_active_channel))
+                        store.add(name, f"{name} 已断开", msg_type="leave", channel=_agent_last_channel.get(name, _last_active_channel))
 
                 # Clear leave debounce for agents that came back online
                 _posted_leave.difference_update(currently_online)
@@ -456,7 +456,7 @@ def configure(cfg: dict, session_token: str = ""):
                         continue
                     if not registry.is_registered(name) and name not in _posted_leave:
                         _posted_leave.add(name)
-                        store.add(name, f"{name} disconnected", msg_type="leave", channel=_agent_last_channel.get(name, _last_active_channel))
+                        store.add(name, f"{name} 已断开", msg_type="leave", channel=_agent_last_channel.get(name, _last_active_channel))
 
                 if _known_online != currently_online and _event_loop:
                     asyncio.run_coroutine_threadsafe(broadcast_status(), _event_loop)
@@ -628,7 +628,7 @@ def _on_session_change(action: str, session: dict):
                 store.update_message(output_id, {"metadata": meta})
         store.add(
             sender="system",
-            text=f"Session complete: {session.get('template_name', '?')}",
+            text=f"会话完成：{session.get('template_name', '?')}",
             msg_type="session_end",
             channel=session.get("channel", "general"),
             metadata={"session_id": session.get("id"), "output_message_id": output_id},
@@ -637,7 +637,7 @@ def _on_session_change(action: str, session: dict):
         reason = session.get("interrupt_reason", "interrupted")
         store.add(
             sender="system",
-            text=f"Session ended: {session.get('template_name', '?')} ({reason})",
+            text=f"会话结束：{session.get('template_name', '?')} ({reason})",
             msg_type="session_end",
             channel=session.get("channel", "general"),
             metadata={"session_id": session.get("id"), "reason": reason},
@@ -744,10 +744,10 @@ async def _handle_new_message(msg: dict):
     # Check for slash commands — use stripped text (sans @mentions)
     if stripped == "/continue":
         if sender in known_agents:
-            store.add("system", f"Loop guard: only humans can /continue. {sender} tried to self-resume.", channel=channel)
+            store.add("system", f"循环保护：只有人类可以执行 /continue。{sender} 试图自行恢复。", channel=channel)
             return
         router.continue_routing(channel)
-        store.add("system", f"Routing resumed by {sender}.", channel=channel)
+        store.add("system", f"{sender} 已恢复消息路由。", channel=channel)
         await broadcast_status()
         return
 
@@ -825,7 +825,7 @@ async def _handle_new_message(msg: dict):
             if errors:
                 store.add(
                     "system",
-                    f"Session draft from {sender} has errors:\n" + "\n".join(f"- {e}" for e in errors),
+                    f"{sender} 提交的会话草案有错误：\n" + "\n".join(f"- {e}" for e in errors),
                     msg_type="session_draft",
                     channel=channel,
                     metadata={"draft_id": draft_id, "revision": revision, "proposed_by": sender,
@@ -835,7 +835,7 @@ async def _handle_new_message(msg: dict):
                 draft_json.setdefault("id", f"draft-{draft_id}")
                 store.add(
                     "system",
-                    f"Session draft from {sender}: **{draft_json.get('name', '?')}**",
+                    f"{sender} 提交的会话草案：**{draft_json.get('name', '?')}**",
                     msg_type="session_draft",
                     channel=channel,
                     metadata={"draft_id": draft_id, "revision": revision, "proposed_by": sender,
@@ -844,7 +844,7 @@ async def _handle_new_message(msg: dict):
         except json.JSONDecodeError:
             store.add(
                 "system",
-                f"Session draft from {sender} contains invalid JSON.",
+                f"{sender} 提交的会话草案包含无效 JSON。",
                 msg_type="session_draft",
                 channel=channel,
                 metadata={"draft_id": draft_id, "revision": revision, "proposed_by": sender,
@@ -868,8 +868,8 @@ async def _handle_new_message(msg: dict):
             router.set_guard_emitted(channel)
             store.add(
                 "system",
-                f"Loop guard: {router.max_hops} agent-to-agent hops reached. "
-                "Type /continue to resume.",
+                f"循环保护：智能体之间已互相转发 {router.max_hops} 次。"
+                "输入 /continue 继续。",
                 channel=channel
             )
         return
@@ -895,7 +895,7 @@ async def _handle_new_message(msg: dict):
         if allowed_agent and target != allowed_agent:
             continue
         if not mcp_bridge.is_online(target):
-            store.add("system", f"{target} appears offline — message queued.", msg_type="system", channel=channel)
+            store.add("system", f"{target} 似乎不在线，消息已排队。", msg_type="system", channel=channel)
         if agents.is_available(target):
             await agents.trigger(target, message=chat_msg, channel=channel, prompt=custom_prompt)
 
@@ -1170,7 +1170,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         continue
                     if cmd == "/continue":
                         router.continue_routing()
-                        store.add("system", "Resuming agent conversation...", msg_type="system", channel=channel)
+                        store.add("system", "正在恢复智能体对话...", msg_type="system", channel=channel)
                         await broadcast_status()
                         continue
                     # Broadcast slash commands — expand without storing the raw command.
@@ -1259,7 +1259,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 if rid is not None:
                     if not rules.activate(int(rid)):
                         await websocket.send_text(json.dumps({
-                            "type": "rule_error", "error": "Rule no longer exists. Refresh the page.",
+                            "type": "rule_error", "error": "该规则已不存在，请刷新页面。",
                         }))
                 continue
 
@@ -1730,7 +1730,7 @@ async def demote_proposal(msg_id: int):
     """Demote a proposal-style message back to a regular chat message."""
     msg = store.get_by_id(msg_id)
     if not msg:
-        return JSONResponse({"error": "message not found"}, status_code=404)
+        return JSONResponse({"error": "找不到该消息"}, status_code=404)
     msg_type = msg.get("type")
     if msg_type not in {"job_proposal", "session_draft"}:
         return JSONResponse({"error": "not a proposal"}, status_code=400)
@@ -1849,7 +1849,7 @@ async def resolve_rule_proposal(msg_id: int, request: Request):
     """Activate or dismiss a rule proposal."""
     msg = store.get_by_id(msg_id)
     if not msg:
-        return JSONResponse({"error": "message not found"}, status_code=404)
+        return JSONResponse({"error": "找不到该消息"}, status_code=404)
     if msg.get("type") != "rule_proposal":
         return JSONResponse({"error": "not a rule proposal"}, status_code=400)
     body = await request.json()
@@ -1859,11 +1859,11 @@ async def resolve_rule_proposal(msg_id: int, request: Request):
 
     if action == "activate" and rule_id is not None:
         if not rules.activate(int(rule_id)):
-            return JSONResponse({"error": "Rule no longer exists."}, status_code=409)
+            return JSONResponse({"error": "该规则已不存在。"}, status_code=409)
         meta["status"] = "activated"
     elif action == "draft" and rule_id is not None:
         if not rules.make_draft(int(rule_id)):
-            return JSONResponse({"error": "Rule no longer exists."}, status_code=409)
+            return JSONResponse({"error": "该规则已不存在。"}, status_code=409)
         meta["status"] = "drafted"
     elif action == "dismiss" and rule_id is not None:
         rules.delete(int(rule_id))
@@ -1890,7 +1890,7 @@ async def demote_rule_proposal(msg_id: int):
     """Demote a rule_proposal message back to a regular chat message and delete the rule."""
     msg = store.get_by_id(msg_id)
     if not msg:
-        return JSONResponse({"error": "message not found"}, status_code=404)
+        return JSONResponse({"error": "找不到该消息"}, status_code=404)
     if msg.get("type") != "rule_proposal":
         return JSONResponse({"error": "not a rule proposal"}, status_code=400)
     meta = msg.get("metadata", {})
@@ -1957,7 +1957,7 @@ async def create_job(request: Request):
     body = await request.json()
     title = body.get("title", "").strip()
     if not title:
-        return JSONResponse({"error": "title required"}, status_code=400)
+        return JSONResponse({"error": "标题不能为空"}, status_code=400)
     job_type = body.get("type", "job")
     channel = body.get("channel", "general")
     created_by = body.get("created_by", "user")
@@ -2036,12 +2036,12 @@ async def post_job_message(job_id: int, request: Request):
     sender = body.get("sender", "user")
     attachments = body.get("attachments", [])
     if not text and not attachments:
-        return JSONResponse({"error": "text or attachments required"}, status_code=400)
+        return JSONResponse({"error": "需要填写文字或附件"}, status_code=400)
     msg_type = body.get("type", "chat")
     msg = jobs.add_message(job_id, sender, text,
                            attachments=attachments, msg_type=msg_type)
     if msg is None:
-        return JSONResponse({"error": "job not found"}, status_code=404)
+        return JSONResponse({"error": "找不到该任务"}, status_code=404)
 
     # Route @mentions in job messages to agents (with job_id context)
     job = jobs.get(job_id)
@@ -2277,7 +2277,7 @@ async def rename_agent_label(name: str, request: Request):
         return JSONResponse({"error": "invalid JSON"}, status_code=400)
     label = body.get("label", "").strip()
     if not label:
-        return JSONResponse({"error": "label is required"}, status_code=400)
+        return JSONResponse({"error": "名称不能为空"}, status_code=400)
 
     import re as _re
     new_id = _re.sub(r'[^a-z0-9-]', '', label.lower().replace(' ', '-')).strip('-')
@@ -2396,14 +2396,14 @@ async def open_path(body: dict):
             elif p.is_dir():
                 subprocess.Popen(["explorer", str(p)])
             else:
-                return JSONResponse({"error": "path not found"}, status_code=404)
+                return JSONResponse({"error": "路径不存在"}, status_code=404)
         elif sys.platform == "darwin":
             if p.is_file():
                 subprocess.Popen(["open", "-R", str(p)])
             elif p.is_dir():
                 subprocess.Popen(["open", str(p)])
             else:
-                return JSONResponse({"error": "path not found"}, status_code=404)
+                return JSONResponse({"error": "路径不存在"}, status_code=404)
         else:
             # Linux — xdg-open opens the containing folder for files
             if p.is_file():
@@ -2411,7 +2411,7 @@ async def open_path(body: dict):
             elif p.is_dir():
                 subprocess.Popen(["xdg-open", str(p)])
             else:
-                return JSONResponse({"error": "path not found"}, status_code=404)
+                return JSONResponse({"error": "路径不存在"}, status_code=404)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
@@ -2460,10 +2460,10 @@ async def start_session(request: Request):
     if draft_message_id:
         draft_msg = store.get_by_id(int(draft_message_id))
         if not draft_msg:
-            return JSONResponse({"error": "draft message not found"}, status_code=404)
+            return JSONResponse({"error": "找不到草案消息"}, status_code=404)
         meta = draft_msg.get("metadata", {})
         if not meta.get("valid"):
-            return JSONResponse({"error": "draft is not valid"}, status_code=400)
+            return JSONResponse({"error": "草案无效"}, status_code=400)
         tmpl = meta.get("template")
         if not tmpl:
             return JSONResponse({"error": "draft has no template"}, status_code=400)
@@ -2486,18 +2486,18 @@ async def start_session(request: Request):
         cast = _auto_cast(roles, online, started_by)
         if not cast:
             return JSONResponse(
-                {"error": "not enough agents online to fill all roles"},
+                {"error": "在线智能体不足，无法分配所有角色"},
                 status_code=400,
             )
 
     session = session_engine.start_session(template_id, channel, cast, started_by, goal)
     if not session:
-        return JSONResponse({"error": "could not start session (one may already be active)"}, status_code=409)
+        return JSONResponse({"error": "无法开始会话（可能已有会话在进行）"}, status_code=409)
 
     # Add start banner to chat (only after confirmed success)
     store.add(
         sender="system",
-        text=f"Session started: {tmpl.get('name', template_id)}",
+        text=f"会话开始：{tmpl.get('name', template_id)}",
         msg_type="session_start",
         channel=channel,
         metadata={"template_id": template_id, "goal": goal, "session_id": session["id"]},
@@ -2513,7 +2513,7 @@ async def end_session(session_id: int):
         return JSONResponse({"error": "sessions not configured"}, status_code=500)
     session = session_engine.end_session(session_id)
     if not session:
-        return JSONResponse({"error": "session not found or already ended"}, status_code=404)
+        return JSONResponse({"error": "会话不存在或已结束"}, status_code=404)
 
     # Banner is added by _on_session_change("interrupt", ...) callback
     return JSONResponse(session)
@@ -2533,7 +2533,7 @@ async def request_session_draft(request: Request):
     mention_str = f"@{agent_name}"
     store.add(
         "system",
-        f"Requested session draft from {mention_str}. Wait for a proposal.",
+        f"已请 {mention_str} 起草会话流程，请等待方案。",
         channel=channel,
     )
     store.add(
@@ -2565,10 +2565,10 @@ async def save_draft(request: Request):
         return JSONResponse({"error": "message_id required"}, status_code=400)
     msg = store.get_by_id(int(msg_id))
     if not msg:
-        return JSONResponse({"error": "message not found"}, status_code=404)
+        return JSONResponse({"error": "找不到该消息"}, status_code=404)
     meta = msg.get("metadata", {})
     if not meta.get("valid"):
-        return JSONResponse({"error": "draft is not valid"}, status_code=400)
+        return JSONResponse({"error": "草案无效"}, status_code=400)
     tmpl = meta.get("template")
     if not tmpl:
         return JSONResponse({"error": "no template in draft"}, status_code=400)
